@@ -33,6 +33,7 @@ BOARD_USERDATAIMAGE_PARTITION_SIZE := 56823880704
 BOARD_CACHEIMAGE_PARTITION_SIZE := 268435456
 BOARD_PERSISTIMAGE_PARTITION_SIZE := 33554432
 BOARD_FLASH_BLOCK_SIZE := 131072
+BOARD_SUPPRESS_SECURE_ERASE := true
 
 TARGET_RECOVERY_FSTAB := device/lenovo/tb8704f/recovery.fstab
 TARGET_USERIMAGES_USE_EXT4 := true
@@ -46,6 +47,7 @@ RECOVERY_SDCARD_ON_DATA := true
 TW_DEFAULT_EXTERNAL_STORAGE := true
 TW_BRIGHTNESS_PATH := /sys/class/leds/lcd-backlight/brightness
 TW_INCLUDE_NTFS_3G := true
+TW_IGNORE_MISC_WIPE_DATA := true
 
 # Legacy footer-based block encryption is source/device-derived, not verified
 # as decryptable by TWRP 12.1. No format fallback is enabled here.

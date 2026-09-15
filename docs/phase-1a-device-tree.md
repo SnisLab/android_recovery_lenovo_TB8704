@@ -23,4 +23,10 @@ tested on the tablet.
 - The reference `system.prop` USB defaults are also not carried; recovery USB
   behavior must come from the TWRP 12.1 common implementation and later tests.
 - Critical firmware, bootloader, security, and EFS entries are backup-only in
-  the fstab and have no wipe flags.
+-  the Phase 1A source inventory but are not exposed in the active bring-up
+  fstab. Only the verified data/storage partitions and removable media are
+  offered there.
+- `BOARD_SUPPRESS_SECURE_ERASE` is a conservative protection for this legacy
+  eMMC bring-up.
+- `TW_IGNORE_MISC_WIPE_DATA` prevents TWRP from automatically processing a
+  bootloader `--wipe_data` request delivered through `/misc`.

@@ -24,6 +24,10 @@ the remaining recovery feature and provenance questions are open.
   variants.
 - Establish evidence for actual working/broken features of the legacy TWRP
   build; source configuration alone is insufficient.
+- Phase 1C: before the first device boot, determine whether the legacy kernel
+  requires `androidboot.hardware=qcom`, `androidboot.bootdevice=7824900.sdhci`,
+  console/earlycon, or `lpm_levels.sleep_disabled=1`. Do not carry over
+  `androidboot.selinux=permissive` or `enforcing=0` without a specific reason.
 - Compare the F-only prebuilt kernel against the documented 3.18 source
   baseline and capture hash, format, DTB evidence, and provenance.
 - Resolved: physical userdata confirms `56823880704` bytes and the 16 KiB

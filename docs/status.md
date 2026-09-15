@@ -4,7 +4,7 @@
 
 **Phase 0 complete — Phase 1 recovery bring-up approved**
 
-Implementation status: **not started**
+Implementation status: **Phase 1A device tree created; not yet built or device-tested**
 
 Phase 0 inventory documented in:
 
@@ -31,9 +31,9 @@ the `tb8704f` codename and a provenance-documented prebuilt kernel. See
 
 ## Phase 1 gate
 
-Phase 0 review and physical read-only verification are complete. Phase 1
-recovery bring-up is approved, with no recovery implementation started by this
-documentation change.
+Phase 0 review and physical read-only verification are complete. Phase 1A is
+complete after pre-build hardening: **Phase 1B build candidate ready**. No
+build or device test has been started.
 
 - Physically verified TB-8704F partition layout
 - Physically verified dedicated recovery/boot arrangement
