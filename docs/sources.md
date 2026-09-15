@@ -1,7 +1,7 @@
 # Phase 0 sources
 
-Research snapshot: 2026-09-15. This inventory is documentation only. No source
-tree is imported into this repository.
+Research snapshot: 2026-09-15. This inventory records the Phase 0 sources;
+the Phase 1A tree is documented separately.
 
 ## Recovery sources
 

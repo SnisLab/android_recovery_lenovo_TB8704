@@ -16,17 +16,18 @@ Phase 0 inventory documented in:
 - `docs/dependency-request-kernel.md`
 - `docs/open-questions.md`
 - `docs/device-verification.md`
+- `docs/prebuilt-kernel.md`
+- `docs/phase-1a-device-tree.md`
 
-Research status: **physically verified and reviewed**.
-No recovery tree was imported and no build was started. Only the reviewed
-read-only device verification was performed. The brianreboot F-only tree is the primary TB-8704F-specific
-recovery reference. HighwayStar and LineageOS remain important family,
-kernel, and Android references. TB-8704F-specific assumptions remain gated by
-the remaining open questions.
+Research status: **physically verified and reviewed**. Phase 1A device-tree
+work has started, but no recovery image was built or booted. The brianreboot
+F-only tree remains the primary TB-8704F-specific recovery reference.
+HighwayStar and LineageOS remain important family, kernel, and Android
+references. TB-8704F-specific feature behavior remains unverified.
 
-The current task is research and documentation only. The F-only brianreboot
-tree is included as a source reference; no source tree was imported. See
-`docs/phase-0-inventory.md` and `docs/device-verification.md`.
+The current task is Phase 1A device-tree construction only. The new tree uses
+the `tb8704f` codename and a provenance-documented prebuilt kernel. See
+`docs/phase-1a-device-tree.md` and `docs/prebuilt-kernel.md`.
 
 ## Phase 1 gate
 

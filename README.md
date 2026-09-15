@@ -19,7 +19,9 @@ Development repository for a modern recovery environment for the Lenovo Tab 4 8 
 
 ## Status
 
-Initial project setup. No device sources have been imported yet.
+Phase 0 is complete. Phase 1A device-tree construction is in progress for
+TWRP 12.1 using the temporary, provenance-documented TB-8704F prebuilt
+kernel. No recovery image has been built, booted, or flashed.
 
 ## Related repositories
 
