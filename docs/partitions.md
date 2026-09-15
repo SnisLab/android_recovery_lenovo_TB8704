@@ -1,6 +1,7 @@
 # TB-8704F partition inventory
 
-Status: partially verified from TB-8704 family source; physical TB-8704F
+Status: partially verified from TB-8704 family source and an F-only TWRP
+source; physical TB-8704F
 confirmation is still required. Paths below are logical by-name paths from
 the device fstab, not guessed numeric `mmcblk0pN` mappings.
 
@@ -16,6 +17,15 @@ the device fstab, not guessed numeric `mmcblk0pN` mappings.
 | config / frp | `/dev/block/bootdevice/by-name/config` mounted at `/frp` | raw eMMC | unknown | Do not modify; exact naming needs device confirmation | Maintainer `rootdir/fstab.qcom` |
 | microSD | `/dev/block/mmcblk1p1`, whole device `/dev/block/mmcblk1` | VFAT in TWRP fstab; runtime auto | unknown | Removable storage | Maintainer TWRP fstab |
 | USB OTG | `/dev/block/sda1`, whole device `/dev/block/sda` | VFAT in TWRP fstab; runtime auto | unknown | Removable storage | Maintainer TWRP fstab |
+
+The F-only brianreboot BoardConfig declares `userdata` as `56823880704`
+bytes, while the earlier family tree declares a much smaller image value.
+This is an unresolved source disagreement, not a confirmed physical size.
+Do not use either value for formatting, resizing, or destructive testing.
+
+The F-only TWRP fstab additionally exposes `dsp`, `lenovocust`, `persist`,
+firmware/modem, bootloader subpartitions, and EFS/modem partitions for
+backup. Their presence in a backup fstab does not make them safe write targets.
 
 The Android fstab additionally names `dsp`, `modem`, and `oem` as mounted
 runtime partitions, but supplies no size. They are not recovery write targets.

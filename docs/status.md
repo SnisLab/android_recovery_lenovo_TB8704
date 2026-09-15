@@ -15,6 +15,7 @@ Phase 0 inventory documented in:
 - `docs/kernel-baseline.md`
 - `docs/dependency-request-kernel.md`
 - `docs/open-questions.md`
+- `docs/device-verification.md`
 
 Research status: **documented, pending review and physical-device verification**.
 No recovery tree was imported, no build was started, and no device operation
@@ -22,7 +23,9 @@ was performed. The best current references are the HighwayStar TB8704
 device/kernel repositories, with TB-8704F-specific assumptions still gated by
 the open questions.
 
-The current task is research and documentation only. See `docs/phase-0-inventory.md`.
+The current task is research and documentation only. The F-only brianreboot
+tree is included as a source reference; no source tree was imported. See
+`docs/phase-0-inventory.md` and `docs/device-verification.md`.
 
 ## Gate to Phase 1
 

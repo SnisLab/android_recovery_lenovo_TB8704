@@ -33,6 +33,14 @@ dependency; do not select a modern compiler by guesswork. Capture the exact
 toolchain and commit once the dependency repository is populated or a known
 build manifest is supplied.
 
+## F-only prebuilt comparison
+
+The F-only brianreboot tree contains a 10,060,180-byte prebuilt `kernel`
+with SHA-256 `9ed23e2eae57b61350110faaccd2a4a6fa6a3651535788275dd7aa0db55dff0c`.
+Its source commit, compiler, embedded DTB, and reproducible build inputs are
+not identified. Treat it as a compatibility artifact for comparison only, not
+as a verified replacement for the documented source baseline.
+
 ## Scope boundary
 
 `SnisLab/android_kernel_lenovo_msm8953` is currently an empty project setup

@@ -22,6 +22,15 @@ The tree's `twrp.fstab` includes internal partitions, microSD as
 `/dev/block/sda1` with whole-device fallback. The exact image produced by this
 tree and its test results are not available from the repository history.
 
+## F-only reference
+
+The F-only brianreboot tree at commit `508409d8dcdf2084a5a165e07babe013d1854494`
+supplies a prebuilt kernel, recovery init/USB/ueventd files, and a TWRP fstab.
+Its BoardConfig uses the same 64 MiB boot/recovery limits and kernel offsets,
+enables crypto/QSEE options, and sets `androidboot.selinux=permissive enforcing=0`.
+The source does not prove that the image boots or that permissive policy is
+acceptable.
+
 ## Known source-level capabilities
 
 The kernel configuration and device files expose ext4, VFAT, exFAT, NTFS,

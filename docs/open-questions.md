@@ -20,3 +20,7 @@
   variants.
 - Establish evidence for actual working/broken features of the legacy TWRP
   build; source configuration alone is insufficient.
+- Compare the F-only prebuilt kernel against the documented 3.18 source
+  baseline and capture hash, format, DTB evidence, and provenance.
+- Resolve the `userdata` size disagreement using physical partition metadata,
+  not source arithmetic.

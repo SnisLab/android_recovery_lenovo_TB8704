@@ -28,6 +28,15 @@ The LineageOS tree's `BoardConfig.mk` uses the same 64 MiB image sizes and
 also accepts all four 8704 variants in its OTA assertion. This broad assertion
 is a reason to require physical F-device verification before reuse.
 
+## F-only source
+
+The F-only brianreboot source is commit `508409d8dcdf2084a5a165e07babe013d1854494`
+on `android-7.1` (2020-07-17). It contains a prebuilt kernel, TWRP fstab,
+recovery ramdisk files, and sepolicy. Its BoardConfig selects MSM8953, arm64,
+2048-byte pages, 64 MiB boot/recovery limits, and permissive SELinux kernel
+arguments. These are source observations only; no image or device behavior is
+independently verified.
+
 ## Model separation
 
 `TB-8704X/N/V` references above are retained only as provenance for the family
