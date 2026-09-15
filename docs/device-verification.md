@@ -1,7 +1,21 @@
-# TB-8704F device verification plan
+# TB-8704F device verification record
 
-This plan is read-only. Do not substitute any write, wipe, format, erase, or
-flash command.
+The read-only verification was completed and reviewed. Do not substitute any
+write, wipe, format, erase, or flash command.
+
+## Verified device facts
+
+- Model: `Lenovo TB-8704F`.
+- The current build fingerprint uses a TB-8704X designation. This is not
+  evidence that the physical device is an X variant.
+- Kernel: `3.18.140-lineageos-g217079fec494`.
+- Slot properties are empty; no A/B partition names and no dynamic/super
+  partition layout were found.
+- `boot` and `recovery` are separate partitions.
+- Crypto state: `encrypted`; crypto type: `block`.
+
+The `/proc/cmdline` read was denied by permissions. This is a recorded
+verification limitation and is not a Phase-0 blocker.
 
 ## Identity and boot mode
 
@@ -23,8 +37,7 @@ ls -l /dev/block/bootdevice/by-name
 for p in /dev/block/bootdevice/by-name/*; do printf '%s ' "$p"; blockdev --getsize64 "$p"; done
 ```
 
-Compare names and sizes with `docs/partitions.md`, especially `boot`,
-`recovery`, `userdata`, `config` versus `frp`, `persist`, `dsp`, and modem/EFS.
+The reviewed physical map is recorded in `docs/partitions.md`.
 
 ## Recovery capabilities
 
@@ -37,10 +50,11 @@ cat /proc/filesystems
 dmesg | grep -iE 'mmc|sdhci|dwc3|usb|mdss|framebuffer|touch|goodix|qsee|keymaster|crypt'
 ```
 
-Record display, touch, storage, USB/ADB, and crypto/QSEE observations without
-changing properties or mounting critical partitions read-write.
+The commands above were used as a read-only capability check. Display/touch,
+USB/ADB, removable-storage behavior, and QSEE/keymaster behavior remain
+feature-test items rather than claims of working recovery functionality.
 
 ## Safety gate
 
-Do not proceed to image boot or partition operations until identity, map,
-boot/recovery arrangement, and a reviewed read-only capture are complete.
+Phase 0 read-only identity, partition-map, and boot/recovery verification is
+complete. No recovery image was built or booted as part of this verification.

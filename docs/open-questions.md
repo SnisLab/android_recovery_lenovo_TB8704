@@ -1,12 +1,16 @@
 # Open questions after Phase 0
 
-- Read the physical TB-8704F model/build fingerprints and bootloader version.
-- Enumerate `/dev/block/bootdevice/by-name`, `/proc/partitions`, and partition
-  sizes. Confirm whether `config` or `frp` is present and which names are
-  actually exposed.
-- Confirm A-only versus A/B from slots, fstab, and bootloader metadata.
-- Confirm whether boot and recovery are separate writable partitions and how a
-  temporary recovery boot is accepted by this exact device.
+Phase 0 is complete. Resolved items are retained below for traceability; only
+the remaining recovery feature and provenance questions are open.
+
+- Resolved: physical model is TB-8704F; the TB-8704X build-fingerprint label is
+  not treated as a hardware-model proof. `/proc/cmdline` was permission denied.
+- Resolved: reviewed physical partition map and sizes are recorded in
+  `docs/partitions.md`; unlisted partition sizes remain unknown.
+- Resolved: empty slot properties and absent A/B/dynamic partition names confirm
+  the A-only, non-dynamic layout.
+- Resolved: boot and recovery are separate physical partitions. Temporary boot
+  acceptance remains unverified.
 - Preserve hashes and read-only backups of stock boot, recovery, persist,
   misc, system, userdata metadata, and critical firmware before experiments.
 - Identify the exact display panel, framebuffer dimensions, Goodix touch model,
@@ -22,5 +26,5 @@
   build; source configuration alone is insufficient.
 - Compare the F-only prebuilt kernel against the documented 3.18 source
   baseline and capture hash, format, DTB evidence, and provenance.
-- Resolve the `userdata` size disagreement using physical partition metadata,
-  not source arithmetic.
+- Resolved: physical userdata confirms `56823880704` bytes and the 16 KiB
+  encrypted-footer reduction documented by the F-only source.

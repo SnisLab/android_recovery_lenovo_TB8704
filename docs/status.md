@@ -2,7 +2,7 @@
 
 ## Current phase
 
-**Phase 0 — Recovery inventory**
+**Phase 0 complete — Phase 1 recovery bring-up approved**
 
 Implementation status: **not started**
 
@@ -17,33 +17,33 @@ Phase 0 inventory documented in:
 - `docs/open-questions.md`
 - `docs/device-verification.md`
 
-Research status: **documented, pending physical read-only verification**.
-No recovery tree was imported, no build was started, and no device operation
-was performed. The brianreboot F-only tree is the primary TB-8704F-specific
+Research status: **physically verified and reviewed**.
+No recovery tree was imported and no build was started. Only the reviewed
+read-only device verification was performed. The brianreboot F-only tree is the primary TB-8704F-specific
 recovery reference. HighwayStar and LineageOS remain important family,
 kernel, and Android references. TB-8704F-specific assumptions remain gated by
-the open questions.
+the remaining open questions.
 
 The current task is research and documentation only. The F-only brianreboot
 tree is included as a source reference; no source tree was imported. See
 `docs/phase-0-inventory.md` and `docs/device-verification.md`.
 
-## Gate to Phase 1
+## Phase 1 gate
 
-Do not begin recovery source import or build work until Phase 0 has been reviewed and the following are verified:
+Phase 0 review and physical read-only verification are complete. Phase 1
+recovery bring-up is approved, with no recovery implementation started by this
+documentation change.
 
-- TB-8704F partition layout
-- dedicated recovery/boot arrangement
-- legacy recovery baseline
-- safe temporary boot strategy
+- Physically verified TB-8704F partition layout
+- Physically verified dedicated recovery/boot arrangement
+- Reviewed legacy recovery baseline
+- Non-destructive temporary-boot strategy remains to be executed and evaluated
 
-Phase 1 release is primarily blocked until the physical TB-8704F partition
-map, boot/recovery arrangement, and non-destructive recovery test plan are
-reviewed. The prebuilt kernel from the brianreboot F-only tree may support an
-initial smoke build, but only as a provenance-documented compatibility/bring-up
+The prebuilt kernel from the brianreboot F-only tree may support an initial
+smoke build, but only as a provenance-documented compatibility/bring-up
 artifact. The reproducible legacy kernel basis may be prepared in parallel by
-the kernel agent and is required before a reproducible release and for
-long-term maintenance, not necessarily before the first recovery build.
+the kernel agent and remains required for a reproducible release and long-term
+maintenance.
 
 ## Cross-repository state
 
