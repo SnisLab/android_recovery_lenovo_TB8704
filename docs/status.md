@@ -2,9 +2,9 @@
 
 ## Current phase
 
-**Phase 0 complete — Phase 1 recovery bring-up approved**
+**Phase 1B build complete — static review complete; device boot not started**
 
-Implementation status: **Phase 1A device tree created; not yet built or device-tested**
+Implementation status: **Phase 1B TWRP 12.1 recovery image built and statically reviewed**
 
 Phase 0 inventory documented in:
 
@@ -19,32 +19,29 @@ Phase 0 inventory documented in:
 - `docs/prebuilt-kernel.md`
 - `docs/phase-1a-device-tree.md`
 
-Research status: **physically verified and reviewed**. Phase 1A device-tree
-work has started, but no recovery image was built or booted. The brianreboot
+Research status: **physically verified and reviewed**. Phase 1B produced the
+first static TWRP image, but it has not been booted or flashed. The brianreboot
 F-only tree remains the primary TB-8704F-specific recovery reference.
 HighwayStar and LineageOS remain important family, kernel, and Android
 references. TB-8704F-specific feature behavior remains unverified.
 
-The current task is Phase 1A device-tree construction only. The new tree uses
-the `tb8704f` codename and a provenance-documented prebuilt kernel. See
-`docs/phase-1a-device-tree.md` and `docs/prebuilt-kernel.md`.
+The Phase 1B result uses the `tb8704f` codename and a provenance-documented
+prebuilt kernel. See `docs/phase-1b-build.md` and `docs/prebuilt-kernel.md`.
 
 ## Phase 1 gate
 
-Phase 0 review and physical read-only verification are complete. Phase 1A is
-complete after pre-build hardening: **Phase 1B build candidate ready**. No
-build or device test has been started.
+Phase 0 review and physical read-only verification are complete. Phase 1A
+device-tree preparation and Phase 1B static build review are complete.
 
 - Physically verified TB-8704F partition layout
 - Physically verified dedicated recovery/boot arrangement
 - Reviewed legacy recovery baseline
-- Non-destructive temporary-boot strategy remains to be executed and evaluated
+- Non-destructive temporary-boot strategy remains to be reviewed and executed
 
-The prebuilt kernel from the brianreboot F-only tree may support an initial
-smoke build, but only as a provenance-documented compatibility/bring-up
-artifact. The reproducible legacy kernel basis may be prepared in parallel by
-the kernel agent and remains required for a reproducible release and long-term
-maintenance.
+The first static TWRP 12.1 image was built with the provenance-documented
+prebuilt kernel. The image has not been booted or flashed. Crypto/QSEE
+integration remains disabled and unverified; the reproducible legacy kernel
+basis remains required for a reproducible release and long-term maintenance.
 
 ## Cross-repository state
 
