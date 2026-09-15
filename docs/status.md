@@ -17,10 +17,11 @@ Phase 0 inventory documented in:
 - `docs/open-questions.md`
 - `docs/device-verification.md`
 
-Research status: **documented, pending review and physical-device verification**.
+Research status: **documented, pending physical read-only verification**.
 No recovery tree was imported, no build was started, and no device operation
-was performed. The best current references are the HighwayStar TB8704
-device/kernel repositories, with TB-8704F-specific assumptions still gated by
+was performed. The brianreboot F-only tree is the primary TB-8704F-specific
+recovery reference. HighwayStar and LineageOS remain important family,
+kernel, and Android references. TB-8704F-specific assumptions remain gated by
 the open questions.
 
 The current task is research and documentation only. The F-only brianreboot
@@ -34,12 +35,15 @@ Do not begin recovery source import or build work until Phase 0 has been reviewe
 - TB-8704F partition layout
 - dedicated recovery/boot arrangement
 - legacy recovery baseline
-- legacy kernel baseline used for first recovery
 - safe temporary boot strategy
 
-Phase 0 completion is blocked until the physical partition map, boot/recovery
-arrangement, exact kernel commit/toolchain, and non-destructive recovery test
-plan are reviewed.
+Phase 1 release is primarily blocked until the physical TB-8704F partition
+map, boot/recovery arrangement, and non-destructive recovery test plan are
+reviewed. The prebuilt kernel from the brianreboot F-only tree may support an
+initial smoke build, but only as a provenance-documented compatibility/bring-up
+artifact. The reproducible legacy kernel basis may be prepared in parallel by
+the kernel agent and is required before a reproducible release and for
+long-term maintenance, not necessarily before the first recovery build.
 
 ## Cross-repository state
 
