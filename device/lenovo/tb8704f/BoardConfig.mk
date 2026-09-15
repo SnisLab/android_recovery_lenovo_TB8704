@@ -53,5 +53,5 @@ TW_IGNORE_MISC_WIPE_DATA := true
 # Legacy footer-based block encryption is source/device-derived, not verified
 # as decryptable by TWRP 12.1. No format fallback is enabled here.
 TW_INCLUDE_CRYPTO := false
-TARGET_HW_DISK_ENCRYPTION := true
+TARGET_HW_DISK_ENCRYPTION := false
 TARGET_KEYMASTER_WAIT_FOR_QSEE := true
