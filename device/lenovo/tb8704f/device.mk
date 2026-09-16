@@ -2,5 +2,6 @@
 # No legacy proprietary recovery runtime files are imported at this stage.
 
 PRODUCT_PACKAGES += \
+    ld.config.recovery.txt \
     linker.recovery \
     recovery
