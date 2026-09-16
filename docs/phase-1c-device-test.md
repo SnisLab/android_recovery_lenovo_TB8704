@@ -120,3 +120,35 @@ This candidate is diagnostic-only, not release configuration.
 The final commandline contains both `androidboot.selinux=permissive` and
 `enforcing=0` for this diagnostic candidate only. No further boot attempt was
 made in this work step.
+
+## Phase 1C.3 linker diagnostic candidate
+
+The Phase 1C.3 A/B build adds only `linker.recovery` to the device package
+list. No kernel, commandline, fstab, init, ueventd or SELinux changes were
+made. This remains a diagnostic-only candidate and was not booted on-device.
+
+- Device-tree commit: `f50235c` (`recovery: include recovery dynamic linker`)
+- Build: incremental `mka recoveryimage`
+- Build result: successful
+- Image path: `out/target/product/tb8704f/recovery.img`
+- Manual-test copy: `/root/build/twrp-12.1-recovery/TB8704F-twrp-phase1c3-linker.img`
+- Image size: 25,049,088 bytes
+- Image SHA-256: `4f6bc3754335879d858119d33814a1d37767438e8a5de9c13087fb4c7bcf396a`
+- Header version: 0
+- Page size: 2048
+- Kernel address: `0x80008000`
+- Ramdisk address: `0x81000000`
+- Tags address: `0x80000100`
+- Kernel size: 10,060,180 bytes
+- Ramdisk size: 14,984,204 bytes
+- Kernel SHA-256: `9ed23e2eae57b61350110faaccd2a4a6fa6a3651535788275dd7aa0db55dff0c`
+- Full commandline: `console=ttyHSL0,115200,n8 androidboot.console=ttyHSL0 androidboot.hardware=qcom msm_rtb.filter=0x237 ehci-hcd.park=3 androidboot.bootdevice=7824900.sdhci lpm_levels.sleep_disabled=1 earlycon=msm_hsl_uart,0x78af000 androidboot.selinux=permissive enforcing=0 buildvariant=eng`
+- Recovery ramdisk: gzip-compressed CPIO, statically inspected after extraction
+- `/system/bin/linker64`: present, AArch64 ELF shared object/static PIE
+- `/system/bin/linker64` SHA-256: `56e54d7db46f1971c2f363c3040d5f5e4b11c2e262e5242cdfd596665ff551cd`
+- `/system/bin/linker`: absent; no 32-bit linker was added
+- `/system/bin/linker_asan64`: symlink to `linker64`
+
+This result confirms that the missing 64-bit dynamic linker from Phase 1C.2
+can be supplied by the recovery build. It does not establish that the tablet
+will boot the image; any device test must still use temporary boot first.
