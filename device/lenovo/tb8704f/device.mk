@@ -2,4 +2,5 @@
 # No legacy proprietary recovery runtime files are imported at this stage.
 
 PRODUCT_PACKAGES += \
+    linker.recovery \
     recovery
