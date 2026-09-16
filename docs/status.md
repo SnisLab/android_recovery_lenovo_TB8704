@@ -2,9 +2,9 @@
 
 ## Current phase
 
-**Phase 1B build complete — static review complete; device boot not started**
+**Phase 1C first temporary boot reviewed; second candidate awaiting manual test**
 
-Implementation status: **Phase 1B TWRP 12.1 recovery image built and statically reviewed**
+Implementation status: **First temporary boot reached no TWRP UI; second commandline candidate built**
 
 Phase 0 inventory documented in:
 
@@ -19,9 +19,9 @@ Phase 0 inventory documented in:
 - `docs/prebuilt-kernel.md`
 - `docs/phase-1a-device-tree.md`
 
-Research status: **physically verified and reviewed**. Phase 1B produced the
-first static TWRP image, but it has not been booted or flashed. The brianreboot
-F-only tree remains the primary TB-8704F-specific recovery reference.
+Research status: **physically verified and reviewed**. The first temporary boot
+was accepted by fastboot but reached no TWRP UI before Android restarted. The
+brianreboot F-only tree remains the primary TB-8704F-specific recovery reference.
 HighwayStar and LineageOS remain important family, kernel, and Android
 references. TB-8704F-specific feature behavior remains unverified.
 
@@ -38,8 +38,8 @@ device-tree preparation and Phase 1B static build review are complete.
 - Reviewed legacy recovery baseline
 - Non-destructive temporary-boot strategy remains to be reviewed and executed
 
-The first static TWRP 12.1 image was built with the provenance-documented
-prebuilt kernel. The image has not been booted or flashed. Crypto/QSEE
+The second candidate adds the documented legacy boot parameters without
+permissive SELinux overrides. It has not yet been booted. Crypto/QSEE
 integration remains disabled and unverified; the reproducible legacy kernel
 basis remains required for a reproducible release and long-term maintenance.
 
