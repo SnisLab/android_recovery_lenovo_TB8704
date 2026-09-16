@@ -50,8 +50,9 @@ TW_BRIGHTNESS_PATH := /sys/class/leds/lcd-backlight/brightness
 TW_INCLUDE_NTFS_3G := true
 TW_IGNORE_MISC_WIPE_DATA := true
 
-# Legacy footer-based block encryption is source/device-derived, not verified
-# as decryptable by TWRP 12.1. No format fallback is enabled here.
+# The physical device uses legacy footer-based FDE. The TWRP 12.1 source from
+# the minimal manifest used here does not support this FDE decryption, so
+# crypto is deliberately disabled for the first recovery bring-up. /data
+# decryption is explicitly not supported yet.
 TW_INCLUDE_CRYPTO := false
 TARGET_HW_DISK_ENCRYPTION := false
-TARGET_KEYMASTER_WAIT_FOR_QSEE := true
