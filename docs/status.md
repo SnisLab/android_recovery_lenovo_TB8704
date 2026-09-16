@@ -2,9 +2,9 @@
 
 ## Current phase
 
-**Phase 1C first temporary boot reviewed; permissive diagnostic candidate awaiting manual test**
+**Phase 1C.4 complete; TWRP 12.1 bring-up frozen; Phase 1D evaluates TWRP 8.1**
 
-Implementation status: **First temporary boot reached no TWRP UI; Phase 1C.2 diagnostic candidate built**
+Implementation status: **TWRP 12.1 Phase 1C.4 reached no TWRP UI; no further 12.1 package iteration is planned**
 
 Phase 0 inventory documented in:
 
@@ -27,6 +27,17 @@ references. TB-8704F-specific feature behavior remains unverified.
 
 The Phase 1B result uses the `tb8704f` codename and a provenance-documented
 prebuilt kernel. See `docs/phase-1b-build.md` and `docs/prebuilt-kernel.md`.
+
+The TWRP 12.1 bring-up is frozen after Phase 1C.4. Phase 1C.2 without the
+recovery linker, Phase 1C.3 with `linker.recovery`, and Phase 1C.4 with
+`ld.config.recovery.txt` all failed to reach modern TWRP userspace; Phase 1C.3
+and 1C.4 both returned directly to Fastboot after a brief black display. No
+additional single missing-package blocker was identified statically, and no
+further 12.1 build changes are planned in this workstream.
+
+Phase 1D investigates the Omni-based TWRP 8.1 branch as a potentially more
+device-appropriate baseline for TB-8704F, while preserving the complete 12.1
+tree and build outputs.
 
 ## Phase 1 gate
 

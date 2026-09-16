@@ -214,3 +214,12 @@ The packed ramdisk contains `/system/bin/linker64`, `/system/etc/ld.config.txt`,
 request `/system/bin/linker64`, and their direct `NEEDED` libraries are present.
 The permissive SELinux flags remain unchanged for A/B isolation; this image is
 diagnostic-only and was not device-tested in this work step.
+
+## Phase 1C.4 device test
+
+The Phase 1C.4 image was successfully transferred with `fastboot boot`. The
+display became briefly black and the tablet then returned directly to Fastboot.
+No TWRP 3.7.1 userspace or ADB became available. No partition was flashed.
+
+The behavior was identical to Phase 1C.3: adding `ld.config.recovery.txt` and
+packing `/system/etc/ld.config.txt` did not change the device boot result.
