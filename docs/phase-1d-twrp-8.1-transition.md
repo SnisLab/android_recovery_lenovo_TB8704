@@ -220,4 +220,91 @@ The first implementation should be limited to:
 7. Build only after an isolated Python/JDK solution is documented and
    reviewed.
 
-No Phase 1D.1 source implementation or recovery build was performed here.
+At the Phase 1D.0 baseline, no Phase 1D.1 source implementation or recovery
+build had been performed.
+
+## Phase 1D.1A: isolated host toolchain
+
+The host environment is isolated at `/root/toolchains/twrp-8.1/env.sh`.
+It selects Python 2.7.18 and Temurin JDK 8u504 without changing the host
+defaults or using global alternatives. The required JDK `lib/tools.jar` is
+present.
+
+The Python build does not provide the optional `_hashlib` extension because
+Python 2.7 cannot build that extension against the host OpenSSL 3 ABI. The
+requested `hashlib` smoke check nevertheless passed for all required
+algorithms:
+
+```text
+md5    098f6bcd4621d373cade4e832627b4f6
+sha1   a94a8fe5ccb19ba61c4c0873d391e987982fbbd3
+sha256 9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08
+sha512 ee26b0dd4af7e749aa1a8ee3c10ae9923f618980772e473f8819a5d4940e0db27ac185f8a0e1d5f84f88bc887fd67b143732c304cc5fa9ad8e6f57f50028a8ff
+```
+
+## Phase 1D.1B: minimal 8.1 device tree
+
+The device tree is now at:
+
+```text
+device/lenovo/tb_8704f
+```
+
+It uses the verified product names and lunch targets:
+
+```text
+PRODUCT_DEVICE := tb_8704f
+PRODUCT_NAME := omni_tb_8704f
+omni_tb_8704f-eng
+omni_tb_8704f-userdebug
+```
+
+The prebuilt kernel is unchanged and has SHA-256:
+
+```text
+9ed23e2eae57b61350110faaccd2a4a6fa6a3651535788275dd7aa0db55dff0c
+```
+
+The verified legacy boot layout, physical partition values, diagnostic
+command line and security-trimmed recovery fstab were retained. The fstab
+syntax flags used by this 8.1 tree (`display`, `backup`, `encryptable`,
+`wipeingui`, `storage` and `removable`) are present in its partition parser.
+
+The supported TWRP settings retained are:
+
+```text
+TW_THEME
+TW_DEFAULT_BRIGHTNESS
+TW_BRIGHTNESS_PATH
+RECOVERY_GRAPHICS_USE_LINELENGTH
+TARGET_RECOVERY_QCOM_RTC_FIX
+RECOVERY_SDCARD_ON_DATA
+TW_DEFAULT_EXTERNAL_STORAGE
+TW_INCLUDE_NTFS_3G
+```
+
+Crypto remains explicitly disabled with `TW_INCLUDE_CRYPTO := false` and
+`TARGET_HW_DISK_ENCRYPTION := false`. No QSEE, keymaster, vold-decrypt or
+other hardware FDE integration was added. No legacy recovery RC files and no
+raw firmware/security partitions were added. The 8.1 tree supplies its own
+recovery linker configuration; the 12.1-only `linker.recovery` and
+`ld.config.recovery.txt` packages were not carried over.
+
+The device tree was integrated into `/root/build/twrp-8.1-recovery`.
+`envsetup.sh` and both requested lunch targets were checked without invoking a
+build. Both targets resolve to platform version `16.1.0` and SDK `27`:
+
+```text
+TARGET_PRODUCT=omni_tb_8704f
+TARGET_DEVICE=tb_8704f
+TARGET_BUILD_VARIANT=eng|userdebug
+PLATFORM_VERSION=16.1.0
+PLATFORM_SDK_VERSION=27
+```
+
+Lunch emits a warning that the optional
+`device/lenovo/tb_8704f/omni.dependencies` file is absent; this does not
+prevent product recognition and no dependency file was added.
+
+No TWRP build, device access, fastboot operation or flash operation was
+performed.
