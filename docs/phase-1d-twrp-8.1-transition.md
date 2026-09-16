@@ -368,3 +368,46 @@ keymaster-backed decryption remain disabled.
 
 This is a static build result only. No device test, ADB, fastboot or flash
 operation has been performed.
+
+## Phase 1D.1E: physical block-device path verification
+
+A temporary boot of TWRP 3.7.0_9-0 on a real TB-8704F was successful and ADB
+was confirmed working. The recovery did not expose the alias
+`/dev/block/bootdevice/by-name`; consequently the internal partitions were not
+recognized or mounted by the previous image.
+
+The physically verified kernel block-device path is:
+
+```text
+/dev/block/platform/soc/7824900.sdhci/by-name
+```
+
+All internal entries in `device/lenovo/tb_8704f/recovery.fstab` now use this
+direct path. The MicroSD and USB OTG paths were not changed. No Qualcomm
+`change_blockdev` binary, legacy helper, additional partition or crypto
+configuration was added.
+
+The source change is:
+
+```text
+570485c recovery: use verified TB-8704F block paths
+```
+
+The new image was built with the existing output tree:
+
+```text
+size: 22503424 bytes
+sha256: 43d5751fd841ca18794004433768b883c4dc30652f085b69de0f57bc68db27c0
+```
+
+The embedded recovery fstab was inspected directly from the new gzip ramdisk.
+Its internal entries for `system`, `userdata`, `cache`, `persist`,
+`lenovocust`, `boot`, `recovery` and `misc` all use the verified path, and no
+`bootdevice/by-name` alias remains. The earlier userspace gates remain valid:
+`/init`, `/sbin/recovery`, `/sbin/twrp` and `/sbin/adbd` are present, while
+`/sbin/ueventd` is the symlink `../init`. Direct ELF dependencies remain
+available in the ramdisk and the kernel SHA-256 remains
+`9ed23e2eae57b61350110faaccd2a4a6fa6a3651535788275dd7aa0db55dff0c`.
+
+No write, wipe or backup test has been performed. The image has not been
+flashed.
