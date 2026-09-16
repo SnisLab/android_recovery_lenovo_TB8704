@@ -73,5 +73,50 @@ Static image values:
 - The approved `recovery.fstab` is present in the ramdisk, including the
   footer-based `/data` entry.
 
-This candidate has not been booted in this work step. Manual testing remains
-blocked pending review.
+## Known-good control
+
+The device-specific control image `TWRP-3.4.0-0_TB-8704F.img` was manually
+tested and temporarily booted successfully. It showed the TWRP UI, `adb
+devices` reported the device as `recovery`, and partitions were detected.
+
+- TWRP version: `3.4.0-0`
+- Kernel: `3.18.71-perf-gdbc2759-dirty`
+- ADB: working
+- Display/framebuffer UI: working
+- `/data`: recognized as encrypted, but the historical TWRP could not decrypt
+  `/data` from the current system
+- Known-good `/proc/cmdline` includes `androidboot.selinux=permissive` and
+  `enforcing=0`
+
+The known-good image is used only as a diagnostic reference. Its permissive
+security configuration is not a release configuration and is not treated as
+a permanent solution.
+
+## Phase 1C.2 diagnostic candidate
+
+The remaining one-variable test between Phase 1C.1 and Phase 1C.2 is the
+permissive SELinux boot configuration. The two permissive parameters were
+added only to isolate SELinux as a possible cause of the missing TWRP UI.
+
+This candidate is diagnostic-only, not release configuration.
+
+- Device-tree commit: `9847f21` (`recovery: add temporary permissive boot diagnostics`)
+- Build: incremental `mka recoveryimage`
+- Build result: successful
+- Image path: `out/target/product/tb8704f/recovery.img`
+- Manual-test copy: `/root/build/twrp-12.1-recovery/TB8704F-twrp-phase1c2-permissive.img`
+- Image size: 24,428,544 bytes
+- Image SHA-256: `c83e7c5b5e6b8748ec8d9c99ee56a2d10664fd3bdb45d2d25b0c55514136a235`
+- Header version: 0
+- Page size: 2048
+- Kernel address: `0x80008000`
+- Ramdisk address: `0x81000000`
+- Tags address: `0x80000100`
+- Kernel size: 10,060,180 bytes
+- Kernel SHA-256: `9ed23e2eae57b61350110faaccd2a4a6fa6a3651535788275dd7aa0db55dff0c`
+- Full commandline: `console=ttyHSL0,115200,n8 androidboot.console=ttyHSL0 androidboot.hardware=qcom msm_rtb.filter=0x237 ehci-hcd.park=3 androidboot.bootdevice=7824900.sdhci lpm_levels.sleep_disabled=1 earlycon=msm_hsl_uart,0x78af000 androidboot.selinux=permissive enforcing=0 buildvariant=eng`
+- `recovery.fstab`: present and unchanged
+
+The final commandline contains both `androidboot.selinux=permissive` and
+`enforcing=0` for this diagnostic candidate only. No further boot attempt was
+made in this work step.

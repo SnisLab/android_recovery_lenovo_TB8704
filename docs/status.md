@@ -2,9 +2,9 @@
 
 ## Current phase
 
-**Phase 1C first temporary boot reviewed; second candidate awaiting manual test**
+**Phase 1C first temporary boot reviewed; permissive diagnostic candidate awaiting manual test**
 
-Implementation status: **First temporary boot reached no TWRP UI; second commandline candidate built**
+Implementation status: **First temporary boot reached no TWRP UI; Phase 1C.2 diagnostic candidate built**
 
 Phase 0 inventory documented in:
 
@@ -38,10 +38,11 @@ device-tree preparation and Phase 1B static build review are complete.
 - Reviewed legacy recovery baseline
 - Non-destructive temporary-boot strategy remains to be reviewed and executed
 
-The second candidate adds the documented legacy boot parameters without
-permissive SELinux overrides. It has not yet been booted. Crypto/QSEE
-integration remains disabled and unverified; the reproducible legacy kernel
-basis remains required for a reproducible release and long-term maintenance.
+The Phase 1C.2 candidate adds permissive SELinux parameters only as a
+diagnostic one-variable test against the known-good control. It has not yet
+been booted and is not a release configuration. Crypto/QSEE integration
+remains disabled and unverified; the reproducible legacy kernel basis remains
+required for a reproducible release and long-term maintenance.
 
 ## Cross-repository state
 
