@@ -308,3 +308,63 @@ prevent product recognition and no dependency file was added.
 
 No TWRP build, device access, fastboot operation or flash operation was
 performed.
+
+## Phase 1D.1D: Android base product inheritance
+
+The first formal 8.1 build completed, but its recovery ramdisk did not contain
+`/init` or `/sbin/recovery`. The cause was that `omni_tb_8704f.mk` inherited
+`device.mk` directly and skipped the normal Android base product layer.
+
+The minimal fix was committed as:
+
+```text
+6a320a6 recovery: restore Android base product inheritance
+```
+
+The product now inherits `full_tb_8704f.mk`, which inherits
+`full_base_telephony.mk` and then `device.mk`. No manual `init` or `recovery`
+packages were added. The transitive base chain reaches `embedded.mk`, where
+the standard `init` and `recovery` product packages are selected.
+
+The incremental build used:
+
+```text
+mka recoveryimage 2>&1 | tee /tmp/tb8704f-phase1d1d-base-product-build.log
+```
+
+It completed successfully. The resulting image is:
+
+```text
+out/target/product/tb_8704f/recovery.img
+size: 22503424 bytes
+sha256: 3b1e081476e0e6bbe167bbd204eb05bf41d0a53f5d8291b801d5f31d6f8e226b
+```
+
+Static inspection of the final image found a legacy Android boot header
+version 0 with 2048-byte pages. The kernel address is `0x80008000`, the
+ramdisk address is `0x81000000`, the tags address is `0x80000100`, and the
+second address is `0x80f00000`. The gzip ramdisk is 12438769 bytes. The
+complete command line is:
+
+```text
+console=ttyHSL0,115200,n8 androidboot.console=ttyHSL0 androidboot.hardware=qcom msm_rtb.filter=0x237 ehci-hcd.park=3 androidboot.bootdevice=7824900.sdhci lpm_levels.sleep_disabled=1 earlycon=msm_hsl_uart,0x78af000 androidboot.selinux=permissive enforcing=0 buildvariant=eng
+```
+
+The extracted kernel remains SHA-256
+`9ed23e2eae57b61350110faaccd2a4a6fa6a3651535788275dd7aa0db55dff0c`.
+The embedded TWRP version is `3.7.0_9-0`, obtained from the recovery binary.
+
+The final ramdisk contains regular ELF files `/init`, `/sbin/recovery`,
+`/sbin/twrp` and `/sbin/adbd`. `/sbin/ueventd` is the Android-conventional
+symlink `../init`. `sbin/ld.config.txt` is present, and direct ELF
+dependencies checked for recovery, TWRP and the keymaster service are present
+in the ramdisk.
+
+The final recovery fstab contains only `system`, `system_image`, `data`,
+`cache`, `persist`, `lenovocust`, `boot`, `recovery`, `misc`, `sdcard1` and
+`usb-otg`. No critical raw firmware partitions are present. The keymaster
+service library is present for documentation only; crypto, QSEE and
+keymaster-backed decryption remain disabled.
+
+This is a static build result only. No device test, ADB, fastboot or flash
+operation has been performed.
