@@ -26,13 +26,19 @@
 ## Device tree
 
 The source tree was copied from the project repository at final commit
-`62a1b28` (`recovery: disable unavailable hardware disk encryption`). The
-build also includes these minimal compatibility fixes:
+`42c1185` (`recovery: clean up disabled crypto configuration`). The build
+also includes these minimal compatibility fixes:
 
 - `e9693d8`: declare 64-bit app support for the arm64 target.
 - `aae2d2f`: select the `recovery` executable package.
 - `eeed093`: disable the unavailable TWRP crypto backend.
 - `62a1b28`: disable unavailable hardware disk-encryption integration.
+
+The physical device uses legacy footer-based FDE. The TWRP `twrp-12.1`
+source from the minimal manifest used here does not support this FDE
+decryption. `TW_INCLUDE_CRYPTO` and `TARGET_HW_DISK_ENCRYPTION` therefore
+remain explicitly false. `/data` decryption is not supported and was not
+tested.
 
 The prebuilt kernel was checked before building: 10,060,180 bytes and
 SHA-256 `9ed23e2eae57b61350110faaccd2a4a6fa6a3651535788275dd7aa0db55dff0c`.
@@ -44,6 +50,8 @@ SHA-256 `9ed23e2eae57b61350110faaccd2a4a6fa6a3651535788275dd7aa0db55dff0c`.
 - Build environment: `ALLOW_MISSING_DEPENDENCIES=true`, with a temporary
   `python` alias to `python3` for the host tooling.
 - Result: successful.
+- Cleanup rebuild: successful after removing the stale
+  `TARGET_KEYMASTER_WAIT_FOR_QSEE` flag.
 
 The source manifest initially exposed missing VTS fuzzer defaults; the build
 continued with `ALLOW_MISSING_DEPENDENCIES=true`. The Android 12.1 recovery
@@ -60,6 +68,9 @@ variables, the missing optional dependency-tree notice, and compiler
 - Path: `out/target/product/tb8704f/recovery.img`
 - Size: 24,428,544 bytes (less than 67,108,864)
 - SHA-256: `d2ac133eb532bfbb560a0e53a4d784c19f753370253bb935f19454c38d00d280`
+- Previous Phase 1B SHA-256: `d2ac133eb532bfbb560a0e53a4d784c19f753370253bb935f19454c38d00d280`
+- Image comparison: identical; removing the stale Keymaster flag did not
+  change the image.
 - `file`: Android bootimg, kernel, ramdisk, page size 2048, cmdline
   `buildvariant=eng`
 
