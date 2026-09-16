@@ -152,3 +152,65 @@ made. This remains a diagnostic-only candidate and was not booted on-device.
 This result confirms that the missing 64-bit dynamic linker from Phase 1C.2
 can be supplied by the recovery build. It does not establish that the tablet
 will boot the image; any device test must still use temporary boot first.
+
+## Phase 1C.3 device test
+
+The Phase 1C.3 image was transferred by temporary Fastboot boot. Fastboot
+accepted the image, but the display became briefly black and the tablet then
+returned directly to Fastboot. No modern TWRP userspace or ADB became
+available. After subsequently booting Android, `/sys/fs/pstore` was empty and
+`/proc/last_kmsg` was not present.
+
+Compared with Phase 1C.2, the boot behavior changed after integrating
+`linker.recovery`, but the device still did not reach the TWRP UI. This test
+did not write or flash a partition.
+
+## Phase 1C.4 linker configuration diagnostic candidate
+
+The static gap analysis established that `init_second_stage.recovery` was
+already present as `/system/bin/init`, while `ld.config.recovery.txt` was
+missing. Recovery init explicitly expects `/system/etc/ld.config.txt` through
+both its copy action and `LD_CONFIG_FILE` environment setting.
+
+Phase 1C.4 adds exactly `ld.config.recovery.txt`. The module is defined as an
+Android `prebuilt_etc` module in `system/linkerconfig/Android.bp`; its input is
+the generated `generate_recovery_linker_config` output, and its installed
+filename is `ld.config.txt` under the recovery `system/etc` directory.
+
+- Device-tree commit: `aff8fff` (`recovery: include recovery linker configuration`)
+- Build: incremental `mka recoveryimage`
+- Build result: successful
+- Image path: `out/target/product/tb8704f/recovery.img`
+- Manual-test copy: `/root/build/twrp-12.1-recovery/TB8704F-twrp-phase1c4-ldconfig.img`
+- Image size: 25,049,088 bytes
+- Image SHA-256: `c0eb0dec8487cc78f5434401647f10aabf9b21472c39f97338a9fb077ada1786`
+- Ramdisk size: 14,984,013 bytes
+- Header version: 0
+- Page size: 2048
+- Kernel address: `0x80008000`
+- Ramdisk address: `0x81000000`
+- Tags address: `0x80000100`
+- Kernel size: 10,060,180 bytes
+- Kernel SHA-256: `9ed23e2eae57b61350110faaccd2a4a6fa6a3651535788275dd7aa0db55dff0c`
+- Full commandline: `console=ttyHSL0,115200,n8 androidboot.console=ttyHSL0 androidboot.hardware=qcom msm_rtb.filter=0x237 ehci-hcd.park=3 androidboot.bootdevice=7824900.sdhci lpm_levels.sleep_disabled=1 earlycon=msm_hsl_uart,0x78af000 androidboot.selinux=permissive enforcing=0 buildvariant=eng`
+- `/system/etc/ld.config.txt`: present in the build output and packed ramdisk
+- `ld.config.txt` size: 238 bytes
+- `ld.config.txt` SHA-256: `a08ae3766847dd03cf3a95cf2e3989e986856dddeef1b209e80a39a238be0260`
+
+The generated recovery linker configuration contains the default recovery
+namespace:
+
+```text
+dir.recovery = /system/bin
+[recovery]
+namespace.default.isolated = false
+namespace.default.search.paths = /system/${LIB}
+namespace.default.asan.search.paths = /data/asan/system/${LIB}
+namespace.default.asan.search.paths += /system/${LIB}
+```
+
+The packed ramdisk contains `/system/bin/linker64`, `/system/etc/ld.config.txt`,
+`/system/bin/init` and `/system/bin/recovery`. Both `init` and `recovery`
+request `/system/bin/linker64`, and their direct `NEEDED` libraries are present.
+The permissive SELinux flags remain unchanged for A/B isolation; this image is
+diagnostic-only and was not device-tested in this work step.
