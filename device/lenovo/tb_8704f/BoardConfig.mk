@@ -9,8 +9,6 @@ TARGET_ARCH_VARIANT := armv8-a
 TARGET_CPU_ABI := arm64-v8a
 TARGET_CPU_VARIANT := generic
 TARGET_CPU_SMP := true
-TARGET_SUPPORTS_64_BIT_APPS := true
-
 TARGET_2ND_ARCH := arm
 TARGET_2ND_ARCH_VARIANT := armv7-a-neon
 TARGET_2ND_CPU_ABI := armeabi-v7a
@@ -26,7 +24,7 @@ BOARD_MKBOOTIMG_ARGS += \
     --ramdisk_offset 0x01000000 \
     --tags_offset 0x00000100 \
     --second_offset 0x00f00000
-TARGET_PREBUILT_KERNEL := device/lenovo/tb8704f/kernel
+TARGET_PREBUILT_KERNEL := device/lenovo/tb_8704f/kernel
 
 BOARD_BOOTIMAGE_PARTITION_SIZE := 0x04000000
 BOARD_RECOVERYIMAGE_PARTITION_SIZE := 0x04000000
@@ -35,9 +33,7 @@ BOARD_USERDATAIMAGE_PARTITION_SIZE := 56823880704
 BOARD_CACHEIMAGE_PARTITION_SIZE := 268435456
 BOARD_PERSISTIMAGE_PARTITION_SIZE := 33554432
 BOARD_FLASH_BLOCK_SIZE := 131072
-BOARD_SUPPRESS_SECURE_ERASE := true
-
-TARGET_RECOVERY_FSTAB := device/lenovo/tb8704f/recovery.fstab
+TARGET_RECOVERY_FSTAB := device/lenovo/tb_8704f/recovery.fstab
 TARGET_USERIMAGES_USE_EXT4 := true
 TARGET_USERIMAGES_USE_F2FS := false
 
@@ -49,11 +45,6 @@ RECOVERY_SDCARD_ON_DATA := true
 TW_DEFAULT_EXTERNAL_STORAGE := true
 TW_BRIGHTNESS_PATH := /sys/class/leds/lcd-backlight/brightness
 TW_INCLUDE_NTFS_3G := true
-TW_IGNORE_MISC_WIPE_DATA := true
-
-# The physical device uses legacy footer-based FDE. The TWRP 12.1 source from
-# the minimal manifest used here does not support this FDE decryption, so
-# crypto is deliberately disabled for the first recovery bring-up. /data
-# decryption is explicitly not supported yet.
+# Crypto is intentionally disabled for the first recovery bring-up.
 TW_INCLUDE_CRYPTO := false
 TARGET_HW_DISK_ENCRYPTION := false
