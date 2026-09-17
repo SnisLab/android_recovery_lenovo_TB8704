@@ -45,6 +45,5 @@ RECOVERY_SDCARD_ON_DATA := true
 TW_DEFAULT_EXTERNAL_STORAGE := true
 TW_BRIGHTNESS_PATH := /sys/class/leds/lcd-backlight/brightness
 TW_INCLUDE_NTFS_3G := true
-# Crypto is intentionally disabled for the first recovery bring-up.
-TW_INCLUDE_CRYPTO := false
-TARGET_HW_DISK_ENCRYPTION := false
+TW_INCLUDE_CRYPTO := true
+TARGET_HW_DISK_ENCRYPTION := true

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+    <remote
+        name="tb8704f-github"
+        fetch="https://github.com/" />
+
+    <project
+        name="TeamWin/android_device_qcom_common"
+        path="device/qcom/common"
+        remote="tb8704f-github"
+        revision="c783b51fff4350e3d65c1519ea338e07f82ffb36" />
+</manifest>

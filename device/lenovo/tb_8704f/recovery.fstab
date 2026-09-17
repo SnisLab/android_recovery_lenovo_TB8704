@@ -7,6 +7,7 @@
 /cache          ext4  /dev/block/platform/soc/7824900.sdhci/by-name/cache       flags=display="Cache";backup=1;wipeingui
 /persist        ext4  /dev/block/platform/soc/7824900.sdhci/by-name/persist     flags=display="Persist";backup=1
 /lenovocust     ext4  /dev/block/platform/soc/7824900.sdhci/by-name/lenovocust  flags=display="Lenovo Custom";backup=1
+/firmware       vfat  /dev/block/platform/soc/7824900.sdhci/by-name/modem      flags=mounttodecrypt;fsflags=ro
 /boot           emmc  /dev/block/platform/soc/7824900.sdhci/by-name/boot        flags=display="Boot";backup=1
 /recovery       emmc  /dev/block/platform/soc/7824900.sdhci/by-name/recovery    flags=display="Recovery";backup=1
 /misc           emmc  /dev/block/platform/soc/7824900.sdhci/by-name/misc        flags=display="Misc"
