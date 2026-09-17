@@ -309,6 +309,46 @@ prevent product recognition and no dependency file was added.
 No TWRP build, device access, fastboot operation or flash operation was
 performed.
 
+## Phase 1D.1W: successful hardware Recovery restore
+
+On the real Lenovo TB-8704F, while running TWRP 3.7.0_9-0, the backup set
+`2026-09-17--20-15-07_lineage_TB8704-userdebug_11_RQ3A211001001_e` from Phase
+1D.1U was used for the first real restore test. Only the `Recovery` partition
+was selected in the TWRP Restore screen. `Boot`, `Persist`, `Data`, `System`,
+`System Image`, `Cache` and `Lenovo Custom` were not selected.
+
+TWRP reported:
+
+```text
+Restore success
+```
+
+The raw Recovery partition was hashed after the operation and matched the
+Recovery backup exactly. This validates the bit-identical path:
+
+```text
+Recovery backup -> TWRP restore -> Recovery block device
+```
+
+The Boot partition was checked before and after the operation and remained
+unchanged. No additional unexpected partition was written, and neither Boot
+nor Persist was restored. The recovery log and report remain local at:
+
+```text
+C:\adb\TB8704F-Lab\logs\phase1d1w-recovery-restore.log
+C:\adb\TB8704F-Lab\reports\phase1d1w-recovery-restore.md
+```
+
+After the restore, `/cache/recovery/command` contained no `--wipe_data`.
+Neither wipe, format, reboot, second restore, Boot restore, Persist restore
+nor flash outside the TWRP Restore operation was performed. No Restore write
+occurred for any other partition.
+
+This validates on real hardware the Recovery backup read path, backup image,
+restore metadata handling, Recovery raw restore write path, post-write raw
+hash verification and isolation from Boot. Actual Boot, Persist, Data,
+System, System Image and post-write restore verification remain unvalidated.
+
 ## Phase 1D.1V: successful hardware restore preflight
 
 On the real Lenovo TB-8704F, with TWRP 3.7.0_9-0 and the Phase 1D.1Q image
