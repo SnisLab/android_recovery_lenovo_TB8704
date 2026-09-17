@@ -379,8 +379,11 @@ misc BCB state for both paths, including `androidboot.tflash=recovery`,
 BCB/misc boot message. That investigation is outside Phase 1D.1Z-B.
 
 The installed TWRP 3.4.0-0 Recovery is no longer the installed Recovery. Its
-rollback image remains only as an emergency artifact. The separate temporary
-1Q FDE post-decrypt continuation issue was not tested in this phase.
+rollback image remains only as an emergency artifact. A transient post-decrypt
+continuation problem had been observed once after a successful FDE decrypt;
+after a subsequent reboot, decrypt and normal TWRP continuation worked again.
+The behavior was not reproduced and no persistent decrypt defect is currently
+established.
 
 No PIN, decrypt, flash, restore, backup, wipe, format, rollback or source/build
 operation was performed during Phase 1D.1Z-B. Hardware artifacts remain local
@@ -426,8 +429,10 @@ fastboot reboot recovery  -> success
 
 Both paths reach the permanently installed TWRP 3.7.0_9-0 Recovery. The
 Recovery prefix and Boot partition isolation remain validated as documented in
-Phase 1D.1Z-A and 1D.1Z-B. The separate FDE post-decrypt continuation issue
-was not tested and remains open.
+Phase 1D.1Z-A and 1D.1Z-B. A transient post-decrypt continuation problem was
+observed once after a successful FDE decrypt; after a subsequent reboot,
+decrypt and normal TWRP continuation worked again. It was not reproduced, and
+no persistent decrypt defect is currently established.
 
 No flash, restore, backup, PIN, decrypt, wipe, format or source/build change
 was performed during Phase 1D.1Z-C. The hardware report remains local at:
@@ -484,9 +489,11 @@ The Boot partition remained unchanged at SHA-256
 
 The three states remain separate: temporary 1Q boot works, the persistent
 Recovery partition contains the 1Q prefix correctly, and the permanent
-Recovery boot path has not yet been shown to start 1Q. The separate issue in
-which temporary 1Q can decrypt FDE but TWRP does not continue correctly after
-decryption is outside this phase and remains open for later investigation.
+Recovery boot path has not yet been shown to start 1Q. A transient
+post-decrypt continuation problem was observed once after a successful FDE
+decrypt; after a subsequent reboot, decrypt and normal TWRP continuation worked
+again. It was not reproduced, and no persistent decrypt defect is currently
+established.
 
 No flash, restore, backup, wipe, format, reboot, PIN, decrypt or device write
 was performed during Phase 1D.1Z-A itself. The hardware report remains local
