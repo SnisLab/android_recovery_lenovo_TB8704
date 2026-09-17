@@ -556,3 +556,49 @@ available in the ramdisk and the kernel SHA-256 remains
 
 No write, wipe or backup test has been performed. The image has not been
 flashed.
+
+## Phase 1D.1O: QSEE loader closure and separate strace artifact
+
+The recovery device makefile now copies the three proprietary QSEE runtime
+libraries needed directly by `/sbin/qseecomd` into `/sbin`:
+
+```text
+/sbin/libQSEEComAPI.so
+/sbin/libdrmfs.so
+/sbin/libdiag.so
+```
+
+The existing `/vendor/lib64` copies remain unchanged. This avoids relying on a
+manual `LD_LIBRARY_PATH` when launching `qseecomd`, while preserving the
+existing vendor runtime layout. `strace` is not a recovery package and is not
+copied into the recovery ramdisk.
+
+The loader-only recovery build completed successfully. Static inspection of
+the final ramdisk confirmed `qseecomd`, all three `/sbin` libraries, the three
+`/vendor/lib64` libraries and `vendor/lib64/hw/keystore.msm8953.so`. The
+`/sbin` and `/vendor/lib64` copies have identical SHA-256 values:
+
+```text
+libQSEEComAPI.so  9d37dcd350da334af5323ce982ab91a48dbb2d611314369af3f2bcf372177b3b
+libdrmfs.so       8a53e926ce7f6537176feec9c9f20d6d6e1af34ac88ee65a9af7daafbe625ec1
+libdiag.so        5c5177670088565b55e39da4bd37d6d7e95954c368cdc7e5ba3a018ef6b495ec
+```
+
+The resulting image is:
+
+```text
+TB8704F-twrp-phase1d1o-qsee-loader.img
+size: 23568384 bytes
+sha256: 9955d0fd1ec45deeb036c6e14fe7fd2ba41252937066d40da4e34cc4ee4fdb86
+```
+
+`strace` was built separately with the same product environment as an
+ELF64/AArch64 binary using `/system/bin/linker64`. It is kept outside the
+device tree at `out/diagnostics/strace-arm64` and is not part of the image.
+Its SHA-256 is:
+
+```text
+a137e7613e740fbd8a3e195d7c325e2e1169e36d4c71e8d4688f8037e8148a29
+```
+
+No device boot, ADB, fastboot, flash or decrypt test was performed.
