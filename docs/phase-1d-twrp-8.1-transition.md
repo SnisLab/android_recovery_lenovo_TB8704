@@ -309,6 +309,108 @@ prevent product recognition and no dependency file was added.
 No TWRP build, device access, fastboot operation or flash operation was
 performed.
 
+## Phase 1D.1G - Qualcomm hardware FDE userspace
+
+The Qualcomm common crypto integration is managed by a local repo manifest,
+not by `omni.dependencies`. The pinned project is:
+
+- Repository: `TeamWin/android_device_qcom_common`
+- Branch provenance: `android-8.0`
+- Commit: `c783b51fff4350e3d65c1519ea338e07f82ffb36`
+- Manifest: `manifests/twrp-8.1-qcom-common.xml`
+
+The Android 8.0 provenance is used because this commit contains the
+Android-8-compatible `device/qcom/common/cryptfs_hw` build definitions. The
+older Android 7.1 dependency was not used. The previous `omni.dependencies`
+file was removed because Omni roomservice attempted to manage an already
+manually checked-out project and failed to preserve the pinned checkout.
+
+The TB-8704F FDE configuration now sets:
+
+```text
+TW_INCLUDE_CRYPTO := true
+TARGET_HW_DISK_ENCRYPTION := true
+```
+
+`TARGET_KEYMASTER_WAIT_FOR_QSEE` is deliberately not set because this TWRP
+8.1 branch has no implementation for that variable.
+
+### Firmware verification
+
+Physical TB-8704F verification established:
+
+- Block device: `/dev/block/platform/soc/7824900.sdhci/by-name/modem`
+- Kernel device: `/dev/block/mmcblk0p1`
+- Filesystem: VFAT
+- Size: 84.0 MiB
+- Used: 33.4 MiB
+- Read-only mount: successful
+- Root entries: `/image`, `/verinfo`
+- Firmware contents include Qualcomm `cmnlib`, `cmnlib64` and `securemm`
+
+The recovery fstab exposes this partition only as:
+
+```text
+/firmware vfat /dev/block/platform/soc/7824900.sdhci/by-name/modem flags=mounttodecrypt;fsflags=ro
+```
+
+The local TWRP parser maps `mounttodecrypt` to `Mount_To_Decrypt=true` and
+maps `fsflags=ro` through `Process_FS_Flags` to `Mount_Read_Only=true`. No
+backup, wipe, storage, removable or flash flag is present. No additional
+firmware, modem-state, bootloader or security partition is exposed, and no
+`/firmware` fstab entry was added for any other partition.
+
+### QSEE prebuilt provenance and closure
+
+Only the verified direct/transitive closure was imported from
+`brianreboot/twrp_device_lenovo_tb_8704f` at commit
+`508409d8dcdf2084a5a165e07babe013d1854494`. The historical source paths,
+Git blob IDs, local paths, hashes and direct `DT_NEEDED` entries are:
+
+| File | Historical source path | Git blob SHA | Local target | SHA-256 | ELF | NEEDED relevant to closure |
+| --- | --- | --- | --- | --- | --- | --- |
+| `qseecomd` | `recovery/root/sbin/qseecomd` | `ca0e47689ff3757da2dfeda824514f1325635740` | `recovery/root/sbin/qseecomd` | `528ff279c4d26782082f8b70e628cd94f65db235989afa5c1bfc97fd7226af14` | ELF64 AArch64 | `libc.so`, `libcutils.so`, `libutils.so`, `liblog.so`, `libdl.so`, `libQSEEComAPI.so`, `libdrmfs.so`, `libc++.so`, `libm.so` |
+| `libQSEEComAPI.so` | `recovery/root/vendor/lib64/libQSEEComAPI.so` | `5d6f128cd0165771334f4c7ffe50a842a148429e` | `recovery/root/vendor/lib64/libQSEEComAPI.so` | `9d37dcd350da334af5323ce982ab91a48dbb2d611314369af3f2bcf372177b3b` | ELF64 AArch64 | `libc.so`, `libcutils.so`, `libutils.so`, `libc++.so`, `libdl.so`, `libm.so` |
+| `libdrmfs.so` | `recovery/root/sbin/libdrmfs.so` | `e133266c77b1da99d3bacfd39dbecaa3ddde90f0` | `recovery/root/vendor/lib64/libdrmfs.so` | `8a53e926ce7f6537176feec9c9f20d6d6e1af34ac88ee65a9af7daafbe625ec1` | ELF64 AArch64 | `libutils.so`, `libcutils.so`, `libdiag.so`, `liblog.so`, `libQSEEComAPI.so`, `libc++.so`, `libdl.so`, `libc.so`, `libm.so` |
+| `libdiag.so` | `recovery/root/sbin/libdiag.so` | `dfa9891c60a3be5c7c3cddc931f910608511fb80` | `recovery/root/vendor/lib64/libdiag.so` | `5c5177670088565b55e39da4bd37d6d7e95954c368cdc7e5ba3a018ef6b495ec` | ELF64 AArch64 | `libc.so`, `libc++.so`, `libdl.so`, `libm.so`, `liblog.so` |
+| `keystore.msm8953.so` | `recovery/root/vendor/lib64/hw/keystore.msm8953.so` | `fb600161d5405b94be9846cca74af041e0db042e` | `recovery/root/vendor/lib64/hw/keystore.msm8953.so` | `6e106b5780818a638aaaec8c354fc2fab60c628522c24e2dd40e588bab112f71` | ELF64 AArch64 | `liblog.so`, `libc.so`, `libdl.so`, `libcrypto.so`, `libcutils.so`, `libhardware.so`, `libc++.so`, `libm.so` |
+
+The ordinary Android runtime libraries in that closure are provided by the
+TWRP build and are present in the recovery `/sbin` search path. The final
+linker configuration searches `/sbin` and `/vendor/${LIB}`. Therefore the
+single canonical QSEE library path is `/vendor/lib64/libQSEEComAPI.so`, which
+also satisfies the explicit `cryptfs_hw` LP64 `dlopen` path. `qseecomd` and
+`libdrmfs.so` resolve their QSEE libraries through the same vendor search
+path; no duplicate `/sbin` copies are used.
+
+The historical QSEE binaries reference `/firmware/image`; the verified
+read-only `/firmware` mount closes that path statically. The Qualcomm
+`cryptfs_hw` implementation also requires
+`/dev/block/bootdevice/by-name/keymaster`; `change_blockdev` creates only the
+legacy alias to the verified physical SDHCI directory. The recovery fstab
+continues to use direct physical paths.
+
+### Build and static result
+
+`libcryptfs_hw` was recognized and built successfully from the pinned
+QCOM-common tree. The complete recovery build also succeeded:
+
+- Image: `TB8704F-twrp-phase1d1g-qcom-fde.img`
+- Size: 23,502,848 bytes
+- SHA-256: `d4eeba1a02b5a4364845180b6365273c8970683a445667559f559c53193dad1d`
+- Required ramdisk files: present, including `qseecomd`, `change_blockdev`,
+  `init.recovery.qcom.rc`, `libcryptfs_hw.so` and
+  `/vendor/lib64/libQSEEComAPI.so`
+- `ueventd -> ../init`: unchanged and valid
+
+The Qualcomm `cryptfs_hw` implementation contains an
+`ERR_MAX_PASSWORD_ATTEMPTS` path that can write
+`/cache/recovery/command` with `--wipe_data` and reboot recovery. The
+QCOM-common source was not modified. No decrypt test is authorized until
+this behavior is separately reviewed and safeguarded.
+
+No device access, ADB, fastboot, flash or decrypt test was performed.
+
 ## Phase 1D.1D: Android base product inheritance
 
 The first formal 8.1 build completed, but its recovery ramdisk did not contain
