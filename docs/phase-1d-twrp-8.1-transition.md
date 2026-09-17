@@ -758,3 +758,55 @@ After successful decryption, `/cache/recovery/command` was absent and neither
 `--wipe_data` nor an automatic userdata wipe occurred. The safeguard remained
 effective. No second PIN attempt, wipe, format, flash, persistent recovery
 installation, manual qseecomd start or strace run was performed.
+
+## Phase 1D.1T: backup capability and storage survey
+
+On the real Lenovo TB-8704F, using TWRP 3.7.0_9-0 booted from
+`TB8704F-twrp-phase1d1q-rpmb.img` (SHA-256
+`14b2d8014ec49f3e48007048b532ab1fa4a0f8eb7933d305d2c423d81deb3475`), a
+read-only backup and storage survey was performed. No source change, build,
+new image, flash or persistent recovery installation was involved.
+
+The runtime fstab exposed the expected backup-capable entries:
+
+```text
+/system
+/system_image
+/data
+/cache
+/persist
+/lenovocust
+/boot
+/recovery
+```
+
+`/firmware` and `/misc` were not exposed as backup targets. The following
+critical firmware, security and EFS partitions were also not offered:
+
+```text
+keymaster  keymasterbak
+rpm        rpmbak
+tz         tzbak
+modemst1   modemst2
+fsg        fsc
+```
+
+No other unexpected critical raw partitions were exposed. This confirms that
+the deliberately restricted recovery fstab behaves as intended on hardware.
+
+At survey time, `/data` was decrypted through `/dev/block/dm-0`, mounted and
+readable as ext4. Usage was 1.6G used and 50.3G free. Internal storage
+`/data/media/0` was available. MicroSD and USB-OTG were neither detected nor
+mounted, so no external recovery backup target was available.
+
+`/sbin/twrp` was present and only its help was read. No `backup`, `restore`,
+`wipe` or `format` command was executed, and no unknown CLI command was tried.
+
+An actual rescue backup using only the same `userdata` partition would not be
+a complete safeguard against failure or loss of `userdata`. For a small next
+functional test, a limited backup may be written to `/data/media/0` and copied
+to the Windows host over ADB. That test must not include `/data`; the planned
+initial set is `Boot`, `Recovery` and `Persist`. Restore remains unauthorized.
+
+No real backup, restore, wipe, format, flash or persistent recovery
+installation was performed.
