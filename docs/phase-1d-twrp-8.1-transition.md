@@ -711,3 +711,50 @@ The following actions were deliberately not performed: manual qseecomd run,
 strace run, decrypt, PIN test, read-write mount, wipe, format, flash or
 persistent recovery installation. The manual trace was skipped because Gate A
 was satisfied by `sys.keymaster.loaded=true`.
+
+## Phase 1D.1S: successful hardware FDE decryption
+
+The Phase 1D.1Q image was temporarily booted with fastboot on a real Lenovo
+TB-8704F. The tested image was `TB8704F-twrp-phase1d1q-rpmb.img`, size
+23582720 bytes, with SHA-256
+`14b2d8014ec49f3e48007048b532ab1fa4a0f8eb7933d305d2c423d81deb3475`. TWRP
+3.7.0_9-0 was used. No recovery flash was performed.
+
+Before decryption, the device reported:
+
+```text
+ro.crypto.state=encrypted
+ro.crypto.type=block
+/data: not mounted
+sys.keymaster.loaded=true
+init.svc.qseecomd=running
+```
+
+Exactly one known-correct device PIN was entered manually through the TWRP
+interface. The PIN was not entered through ADB, stored, logged or included in
+reports. TWRP accepted the attempt successfully. Afterwards, `/data` was
+mounted and readable as ext4 through:
+
+```text
+/dev/block/dm-0
+```
+
+The paths `/data/media/0` and `/data/system` were present. The recovery log
+confirmed:
+
+```text
+Data successfully decrypted, new block device: '/dev/block/dm-0'
+```
+
+This validates on real hardware the chain from TWRP credential input through
+the cryptfs/hardware FDE path, Qualcomm Keymaster/QSEE, RPMB/SSD runtime,
+dm-crypt mapping and the ext4 `/data` mount. It establishes that QSEE and
+Keymaster initialize, RPMB support initializes, hardware-backed FDE
+credential processing succeeds, `/dev/block/dm-0` is created and `/data` can
+be mounted and read. It does not validate complete backup/restore, MTP, USB
+storage, permanent recovery flashing or all TWRP functions.
+
+After successful decryption, `/cache/recovery/command` was absent and neither
+`--wipe_data` nor an automatic userdata wipe occurred. The safeguard remained
+effective. No second PIN attempt, wipe, format, flash, persistent recovery
+installation, manual qseecomd start or strace run was performed.
