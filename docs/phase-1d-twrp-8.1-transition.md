@@ -324,6 +324,9 @@ adb reboot recovery
 `fastboot reboot recovery` was not used for this A/B test, and no flash was
 performed. The kernel Boot-ID differed before and after the command, proving a
 new boot rather than continued execution of the temporary Recovery instance.
+The earlier `fastboot reboot recovery` attempt with the permanently installed
+1Q image had not reached TWRP and ended in Android. In contrast, the same
+command had historically started the installed TWRP 3.4.0-0 Recovery.
 
 The device returned ADB in the `recovery` state and TWRP 3.7.0_9-0 started
 successfully. No rescue fallback was required. The successful installed boot
@@ -349,11 +352,31 @@ SHA-256
 partition also remained unchanged at SHA-256
 `c8452ea44988f7cab79b759a574170a34be185e2acd84e82e19eff7b9267926f`.
 
-The earlier `fastboot reboot recovery` behavior must not be interpreted as a
+The earlier 1Q `fastboot reboot recovery` behavior must not be interpreted as a
 failed flash, an Android rewrite of the Recovery partition, an incorrect
-image or proof that 1Q cannot boot permanently. On this device,
-`adb reboot recovery` is the validated installed Recovery boot mechanism;
-`fastboot reboot recovery` is not a reliable validated Recovery boot path.
+image or proof that 1Q cannot boot permanently. The historical behavior with
+TWRP 3.4.0-0 was successful:
+
+```text
+TWRP 3.4.0-0:
+fastboot reboot recovery -> works
+
+TWRP 3.7.0_9-0 / Phase 1D.1Q:
+fastboot reboot recovery -> currently fails
+
+TWRP 3.7.0_9-0 / Phase 1D.1Q:
+adb reboot recovery -> works
+```
+
+Therefore the issue is version/image-dependent and is not a general failure
+of `fastboot reboot recovery` or the bootloader. The validated 1Q installed
+Recovery path is currently `adb reboot recovery`; the earlier 1Q fastboot
+reboot path remains open for separate analysis.
+
+The later analysis should compare the boot parameters, recovery boot reason and
+misc BCB state for both paths, including `androidboot.tflash=recovery`,
+`ro.boot.tflash`, `ro.bootmode`, `ro.boot.bootmode`, `/proc/cmdline` and the
+BCB/misc boot message. That investigation is outside Phase 1D.1Z-B.
 
 The installed TWRP 3.4.0-0 Recovery is no longer the installed Recovery. Its
 rollback image remains only as an emergency artifact. The separate temporary
