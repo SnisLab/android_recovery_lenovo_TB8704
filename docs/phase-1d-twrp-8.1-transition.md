@@ -309,6 +309,54 @@ prevent product recognition and no dependency file was added.
 No TWRP build, device access, fastboot operation or flash operation was
 performed.
 
+## Phase 1D.1Y: permanent install and rollback preflight
+
+The currently installed Recovery on the Lenovo TB-8704F remained TWRP 3.4.0-0
+with raw SHA-256
+`5f45d4deb20c67894d5ed97861ed6f6192e241630fccd12500ee48aad8903ce5`.
+
+A dedicated bit-identical rollback image was prepared from the validated
+Recovery backup on the Windows test host:
+
+```text
+C:\adb\TB8704F-Lab\images\rollback\TB8704F-twrp-3.4.0-0-installed-backup.img
+size: 67108864 bytes
+sha256: 5f45d4deb20c67894d5ed97861ed6f6192e241630fccd12500ee48aad8903ce5
+```
+
+The planned target is the temporarily validated Phase 1D.1Q image:
+
+```text
+C:\adb\TB8704F-Lab\images\TB8704F-twrp-phase1d1q-rpmb.img
+size: 23582720 bytes
+sha256: 14b2d8014ec49f3e48007048b532ab1fa4a0f8eb7933d305d2c423d81deb3475
+TWRP: 3.7.0_9-0
+```
+
+Both images fit within the known 67108864-byte Recovery partition. The
+rollback image is exactly partition-sized and the 1Q target is smaller than
+the partition. `fastboot.exe` was present on the Windows test host. The
+following commands were prepared for a later, explicitly authorized test but
+were not executed:
+
+```powershell
+C:\adb\fastboot.exe flash recovery `
+  C:\adb\TB8704F-Lab\images\TB8704F-twrp-phase1d1q-rpmb.img
+
+C:\adb\fastboot.exe flash recovery `
+  C:\adb\TB8704F-Lab\images\rollback\TB8704F-twrp-3.4.0-0-installed-backup.img
+```
+
+Before any future install attempt, the independent rollback image, original
+Windows backup set, currently boot-valid installed Recovery and temporary 1Q
+fastboot-boot artifact are all available. This provides a defined fallback
+path. Phase 1D.1Y did not validate permanent 1Q flashing, post-flash readback,
+booting a permanently installed 1Q image, rollback flashing or boot after
+rollback.
+
+No `fastboot flash`, `fastboot boot`, `adb reboot bootloader`, TWRP Restore,
+`dd`, wipe, format or device write occurred during this preflight.
+
 ## Phase 1D.1X: successful boot of restored installed Recovery
 
 On the real Lenovo TB-8704F, the Recovery partition restored in Phase 1D.1W
