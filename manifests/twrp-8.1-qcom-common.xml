@@ -5,8 +5,8 @@
         fetch="https://github.com/" />
 
     <project
-        name="TeamWin/android_device_qcom_common"
+        name="SnisLab/android_device_qcom_common"
         path="device/qcom/common"
         remote="tb8704f-github"
-        revision="c783b51fff4350e3d65c1519ea338e07f82ffb36" />
+        revision="8d57af0d3ba83215987b444a5996532aad2e6b1b" />
 </manifest>
