@@ -309,6 +309,63 @@ prevent product recognition and no dependency file was added.
 No TWRP build, device access, fastboot operation or flash operation was
 performed.
 
+## Phase 1D.1Z-A: permanent 1Q flash survived Android boot
+
+Phase 1D.1Z successfully executed the permanent flash of
+`TB8704F-twrp-phase1d1q-rpmb.img` to the Recovery partition. Fastboot reported
+`Writing 'recovery' OKAY` and exited with code 0. However,
+`fastboot reboot recovery` and a subsequent manual recovery boot did not start
+the permanently installed 1Q Recovery; the device ultimately returned to
+Android. Phase 1D.1Z-A therefore used the 1Q image only as a temporary
+diagnostic Recovery via `fastboot boot`.
+
+The temporary diagnostic Recovery was TWRP 3.7.0_9-0 with ADB in the
+`recovery` state. No PIN was entered and `/data` was not decrypted.
+
+The first exactly 23582720 bytes of the physical Recovery partition were
+hashed directly on the device. The result matched the Phase 1D.1Q image:
+
+```text
+14b2d8014ec49f3e48007048b532ab1fa4a0f8eb7933d305d2c423d81deb3475
+```
+
+Thus the written image prefix remained present after the Android boot attempt:
+
+```text
+Recovery partition prefix == Phase 1D.1Q image
+FLASH SURVIVED ANDROID BOOT
+```
+
+The full 67108864-byte Recovery partition SHA-256 was:
+
+```text
+CA88238D2667911EF2810CC46F2866A4902DADDFC5092AB5BDB343AD2B331C2A
+```
+
+This does not match the historical TWRP 3.4.0 Recovery hash
+`5f45d4deb20c67894d5ed97861ed6f6192e241630fccd12500ee48aad8903ce5`, as
+expected because the new image is 23582720 bytes and the partition is
+67108864 bytes. The exact image-prefix hash is authoritative for verifying
+the written 1Q image. The attempted Windows binary prefix dump had the wrong
+size and is invalid; it was not used for verification.
+
+The readback disproves the hypothesis that Android boot restored the old TWRP
+3.4.0 image. No `install-recovery.sh`, `recovery-from-boot.p` or automatic
+old-Recovery rewrite should be treated as the cause without new evidence.
+The Boot partition remained unchanged at SHA-256
+`c8452ea44988f7cab79b759a574170a34be185e2acd84e82e19eff7b9267926f`.
+
+The three states remain separate: temporary 1Q boot works, the persistent
+Recovery partition contains the 1Q prefix correctly, and the permanent
+Recovery boot path has not yet been shown to start 1Q. The separate issue in
+which temporary 1Q can decrypt FDE but TWRP does not continue correctly after
+decryption is outside this phase and remains open for later investigation.
+
+No flash, restore, backup, wipe, format, reboot, PIN, decrypt or device write
+was performed during Phase 1D.1Z-A itself. The hardware report remains local
+at `C:\adb\TB8704F-Lab\reports\phase1d1z-a-recovery-readback.md` and was not
+imported into the repository.
+
 ## Phase 1D.1Y: permanent install and rollback preflight
 
 The currently installed Recovery on the Lenovo TB-8704F remained TWRP 3.4.0-0
