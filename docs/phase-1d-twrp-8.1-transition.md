@@ -362,16 +362,16 @@ TWRP 3.4.0-0:
 fastboot reboot recovery -> works
 
 TWRP 3.7.0_9-0 / Phase 1D.1Q:
-fastboot reboot recovery -> currently fails
+earlier fastboot reboot recovery -> failed once, not reproduced
 
 TWRP 3.7.0_9-0 / Phase 1D.1Q:
 adb reboot recovery -> works
 ```
 
-Therefore the issue is version/image-dependent and is not a general failure
-of `fastboot reboot recovery` or the bootloader. The validated 1Q installed
-Recovery path is currently `adb reboot recovery`; the earlier 1Q fastboot
-reboot path remains open for separate analysis.
+At this point the earlier 1Q failure was a non-reproduced single observation;
+its cause is not established. The validated 1Q installed Recovery path was
+then `adb reboot recovery`, while the earlier 1Q fastboot reboot path remained
+open for separate analysis.
 
 The later analysis should compare the boot parameters, recovery boot reason and
 misc BCB state for both paths, including `androidboot.tflash=recovery`,
@@ -389,6 +389,51 @@ at:
 ```text
 C:\adb\TB8704F-Lab\reports\phase1d1z-b-adb-reboot-recovery.md
 C:\adb\TB8704F-Lab\logs\phase1d1z-b-installed-1q-boot.log
+```
+
+## Phase 1D.1Z-C: fastboot Recovery path successfully reproduced
+
+The `fastboot reboot recovery` path was tested again from the running
+permanently installed Recovery state. Fastboot exited with code 0, the ADB
+connection disappeared during reboot and then returned in the `recovery` state.
+TWRP 3.7.0_9-0 started successfully.
+
+The successful boot included:
+
+```text
+androidboot.tflash=recovery
+```
+
+No bootloop, black screen or Android fallback was observed. This classifies the
+result as:
+
+```text
+FASTBOOT RECOVERY PATH NOW SUCCEEDED
+```
+
+The previous single 1Q failure of `fastboot reboot recovery` was not
+reproduced. It remains documented as an earlier non-reproduced failure, with
+no cause assigned. In particular, the current evidence does not establish a
+BCB, bootloader, image, `androidboot.tflash`, partition-corruption or Android
+Recovery-rewrite defect.
+
+The currently validated permanent 1Q state is therefore:
+
+```text
+adb reboot recovery       -> success
+fastboot reboot recovery  -> success
+```
+
+Both paths reach the permanently installed TWRP 3.7.0_9-0 Recovery. The
+Recovery prefix and Boot partition isolation remain validated as documented in
+Phase 1D.1Z-A and 1D.1Z-B. The separate FDE post-decrypt continuation issue
+was not tested and remains open.
+
+No flash, restore, backup, PIN, decrypt, wipe, format or source/build change
+was performed during Phase 1D.1Z-C. The hardware report remains local at:
+
+```text
+C:\adb\TB8704F-Lab\reports\phase1d1z-c-fastboot-recovery-path.md
 ```
 
 ## Phase 1D.1Z-A: permanent 1Q flash survived Android boot
