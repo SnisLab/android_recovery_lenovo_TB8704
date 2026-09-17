@@ -672,3 +672,42 @@ and the recovery `libcryptfs_hw` contains the refusal safety log without
 `--wipe_data` or `/cache/recovery/command`. The fstab is unchanged.
 
 No device boot, hardware, ADB, fastboot, flash or decrypt test was performed.
+
+## Phase 1D.1R: successful hardware QSEE/RPMB initialization
+
+The Phase 1D.1Q image was temporarily booted on a real Lenovo TB-8704F. The
+boot succeeded and the TWRP 3.7.0_9-0 interface was visible. The user selected
+`Keep Read Only`; no persistent recovery installation or flash was performed.
+
+The tested image was:
+
+```text
+TB8704F-twrp-phase1d1q-rpmb.img
+size: 23582720 bytes
+sha256: 14b2d8014ec49f3e48007048b532ab1fa4a0f8eb7933d305d2c423d81deb3475
+```
+
+After ADB became available, the runtime reported:
+
+```text
+sys.keymaster.loaded=true
+init.svc.qseecomd=running
+```
+
+Two `qseecomd` processes were present. This is recorded as observed runtime
+state and is not treated as an error or changed. `/sbin/librpmb.so` and
+`/sbin/libssd.so` were present, and the kernel reported a detected RPMB
+partition. Therefore the earlier Phase 1D.1P startup failure
+`openat("/sbin/librpmb.so", ...) = -1 ENOENT` followed by `exit_group(-1)` is
+no longer the startup blocker in this recovery.
+
+Together, `sys.keymaster.loaded=true` and `init.svc.qseecomd=running` show that
+qseecomd passed the previously missing RPMB/SSD initialization stage and that
+Keymaster initialization reached the point where the runtime property was
+set. This does not establish that `/data` decryption or FDE fully works, and
+no PIN was tested.
+
+The following actions were deliberately not performed: manual qseecomd run,
+strace run, decrypt, PIN test, read-write mount, wipe, format, flash or
+persistent recovery installation. The manual trace was skipped because Gate A
+was satisfied by `sys.keymaster.loaded=true`.
