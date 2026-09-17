@@ -309,6 +309,65 @@ prevent product recognition and no dependency file was added.
 No TWRP build, device access, fastboot operation or flash operation was
 performed.
 
+## Phase 1D.1Z-B: permanent 1Q Recovery boot validated
+
+After Phase 1D.1Z had permanently written
+`TB8704F-twrp-phase1d1q-rpmb.img` to the Recovery partition and Phase 1D.1Z-A
+had confirmed that the 1Q prefix survived the Android boot attempt, the
+regular installed Recovery boot path was tested. The known 1Q Recovery was
+temporarily booted first, then the following command was issued:
+
+```text
+adb reboot recovery
+```
+
+`fastboot reboot recovery` was not used for this A/B test, and no flash was
+performed. The kernel Boot-ID differed before and after the command, proving a
+new boot rather than continued execution of the temporary Recovery instance.
+
+The device returned ADB in the `recovery` state and TWRP 3.7.0_9-0 started
+successfully. No rescue fallback was required. The successful installed boot
+included:
+
+```text
+androidboot.tflash=recovery
+```
+
+This establishes the path:
+
+```text
+adb reboot recovery
+  -> bootloader Recovery request
+  -> androidboot.tflash=recovery
+  -> permanently installed Recovery partition
+  -> TWRP 3.7.0_9-0
+```
+
+The Recovery prefix remained the expected 23582720-byte Phase 1D.1Q image with
+SHA-256
+`14b2d8014ec49f3e48007048b532ab1fa4a0f8eb7933d305d2c423d81deb3475`. The Boot
+partition also remained unchanged at SHA-256
+`c8452ea44988f7cab79b759a574170a34be185e2acd84e82e19eff7b9267926f`.
+
+The earlier `fastboot reboot recovery` behavior must not be interpreted as a
+failed flash, an Android rewrite of the Recovery partition, an incorrect
+image or proof that 1Q cannot boot permanently. On this device,
+`adb reboot recovery` is the validated installed Recovery boot mechanism;
+`fastboot reboot recovery` is not a reliable validated Recovery boot path.
+
+The installed TWRP 3.4.0-0 Recovery is no longer the installed Recovery. Its
+rollback image remains only as an emergency artifact. The separate temporary
+1Q FDE post-decrypt continuation issue was not tested in this phase.
+
+No PIN, decrypt, flash, restore, backup, wipe, format, rollback or source/build
+operation was performed during Phase 1D.1Z-B. Hardware artifacts remain local
+at:
+
+```text
+C:\adb\TB8704F-Lab\reports\phase1d1z-b-adb-reboot-recovery.md
+C:\adb\TB8704F-Lab\logs\phase1d1z-b-installed-1q-boot.log
+```
+
 ## Phase 1D.1Z-A: permanent 1Q flash survived Android boot
 
 Phase 1D.1Z successfully executed the permanent flash of
