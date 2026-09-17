@@ -309,6 +309,52 @@ prevent product recognition and no dependency file was added.
 No TWRP build, device access, fastboot operation or flash operation was
 performed.
 
+## Phase 1D.1X: successful boot of restored installed Recovery
+
+On the real Lenovo TB-8704F, the Recovery partition restored in Phase 1D.1W
+was booted through the installed path using:
+
+```text
+adb reboot recovery
+```
+
+This was not a `fastboot boot` rescue boot. The Recovery raw SHA-256 before
+boot was `5f45d4deb20c67894d5ed97861ed6f6192e241630fccd12500ee48aad8903ce5`;
+the Boot raw SHA-256 was
+`c8452ea44988f7cab79b759a574170a34be185e2acd84e82e19eff7b9267926f`. Both
+hashes remained unchanged after the test.
+
+The recovery interface started successfully, ADB reported the `recovery`
+state, and no rescue fallback was required. The important version distinction
+is:
+
+```text
+temporarily tested Phase 1D.1Q recovery: TWRP 3.7.0_9-0
+persistently installed Recovery: TWRP 3.4.0-0
+```
+
+Phase 1D.1X validates the boot of the installed TWRP 3.4.0-0 Recovery after
+the backup, restore and `adb reboot recovery` sequence. It does not validate a
+permanent boot of the Phase 1D.1Q TWRP 3.7.0_9-0 image, which has only been
+executed with `fastboot boot` so far.
+
+The installed historical TWRP 3.4.0 recovery uses an older, broader fstab that
+exposes additional EFS-, firmware- and security-adjacent subpartitions as
+backup-capable. None of those additional targets were backed up, restored,
+written or changed during this test. The current Phase 1D.1Q TWRP 3.7.0_9-0
+fstab is intentionally more restrictive and does not expose critical
+partitions as normal backup or restore targets.
+
+The installed TWRP 3.4.0 recovery remains a bootable historical fallback, and
+its backup/restore path has been validated. Its older broad partition
+exposure is nevertheless a reason not to treat it as the final target state
+for the new recovery work. No additional exposed partition is to be used in
+future tests without separate explicit approval.
+
+No further restore or backup, flash, wipe, format, decrypt, PIN test,
+fastboot-rescue boot, source change or build was performed. No reboot other
+than the tested `adb reboot recovery` operation was performed.
+
 ## Phase 1D.1W: successful hardware Recovery restore
 
 On the real Lenovo TB-8704F, while running TWRP 3.7.0_9-0, the backup set
