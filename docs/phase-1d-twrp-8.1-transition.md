@@ -411,6 +411,49 @@ this behavior is separately reviewed and safeguarded.
 
 No device access, ADB, fastboot, flash or decrypt test was performed.
 
+## Phase 1D.1H - safeguarded Qualcomm FDE dependency
+
+The Qualcomm common dependency now uses the SnisLab fork:
+
+- Upstream: `TeamWin/android_device_qcom_common`
+- Upstream basis: `c783b51fff4350e3d65c1519ea338e07f82ffb36`
+- Fork: `SnisLab/android_device_qcom_common`
+- Safe commit: `8d57af0d3ba83215987b444a5996532aad2e6b1b`
+- Recovery manifest: `manifests/twrp-8.1-qcom-common.xml`
+
+The fork is based exactly on the Android-8.0 upstream pin. Its only
+functional change is to neutralize the destructive `wipe_userdata()` body in
+`cryptfs_hw/cryptfs_hw.c`. The function now logs refusal of an automatic
+userdata wipe and performs no file write or recovery reboot. The
+`ERR_MAX_PASSWORD_ATTEMPTS` error remains unchanged and continues to be
+returned to the caller; all QSEE, Keymaster, ICE and cryptfs logic is
+otherwise unchanged.
+
+The repo-managed checkout required one scoped
+`repo sync --force-sync --no-clone-bundle device/qcom/common` because the
+project path changed from TeamWin to SnisLab object metadata. No
+`--force-checkout` or dirty-tree removal was used. The resulting checkout is
+clean and pinned to the safe commit.
+
+The safe rebuild completed successfully:
+
+- `libcryptfs_hw`: built successfully from the SnisLab safe commit
+- Recovery image: `TB8704F-twrp-phase1d1h-safe-fde.img`
+- Image size: 23,502,848 bytes
+- Image SHA-256: `85e6867e1db9ce07598283c3c5345fad16aed2b6ef4f134aa23bb4621601a91e`
+
+The intermediate 64-bit `libcryptfs_hw.so` and the copy extracted from the
+final `ramdisk-recovery.cpio` contain the refusal log:
+
+```text
+ERR_MAX_PASSWORD_ATTEMPTS received; refusing automatic userdata wipe in recovery
+```
+
+Neither contains `--wipe_data` or `/cache/recovery/command`. The final
+ramdisk retains the complete QSEE/FDE closure, `/vendor/lib64` runtime path,
+read-only `mounttodecrypt` firmware entry and direct physical fstab paths.
+No device boot or decrypt test was performed.
+
 ## Phase 1D.1D: Android base product inheritance
 
 The first formal 8.1 build completed, but its recovery ramdisk did not contain
