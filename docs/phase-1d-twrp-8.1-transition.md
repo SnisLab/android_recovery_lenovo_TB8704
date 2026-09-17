@@ -309,6 +309,47 @@ prevent product recognition and no dependency file was added.
 No TWRP build, device access, fastboot operation or flash operation was
 performed.
 
+## Phase 1D.1V: successful hardware restore preflight
+
+On the real Lenovo TB-8704F, with TWRP 3.7.0_9-0 and the Phase 1D.1Q image
+`TB8704F-twrp-phase1d1q-rpmb.img` (SHA-256
+`14b2d8014ec49f3e48007048b532ab1fa4a0f8eb7933d305d2c423d81deb3475`), a
+read-only restore preflight was completed. The backup set was detected:
+
+```text
+2026-09-17--20-15-07_lineage_TB8704-userdebug_11_RQ3A211001001_e
+```
+
+Before opening the Restore menu, the backup set was confirmed to be present,
+the Boot and Recovery backup hashes matched their current raw partitions, the
+complete Windows copy was available, `/cache/recovery/command` contained no
+`--wipe_data`, and no unexpected partition-backup files were present.
+
+TWRP read the backup metadata successfully and offered exactly these restore
+targets:
+
+```text
+Persist
+Boot
+Recovery
+```
+
+`Data`, `System`, `System Image`, `Cache`, `Lenovo Custom`, `Firmware` and
+`Misc` were not offered. No critical firmware, security or EFS partition was
+offered, including `aboot`, `abootbak`, `tz`, `tzbak`, `rpm`, `rpmbak`,
+`devcfg`, `devcfgbak`, `modemst1`, `modemst2`, `fsg`, `fsc`, `keymaster` or
+`keymasterbak`. This matches the intentionally restricted recovery fstab.
+
+No Restore action or Swipe to Restore was performed. No Boot, Recovery or
+Persist write occurred; Boot and Recovery remained unchanged. The complete
+external Windows backup copy remained available, preserving an independent
+copy before any possible future restore test.
+
+This validates on real hardware that TWRP recognizes the backup set, reads its
+restore metadata, offers only `Persist`, `Boot` and `Recovery`, and excludes
+unexpected or critical firmware/security targets. Actual Restore of any
+partition and post-write restore verification remain unvalidated.
+
 ## Phase 1D.1G - Qualcomm hardware FDE userspace
 
 The Qualcomm common crypto integration is managed by a local repo manifest,
