@@ -810,3 +810,48 @@ initial set is `Boot`, `Recovery` and `Persist`. Restore remains unauthorized.
 
 No real backup, restore, wipe, format, flash or persistent recovery
 installation was performed.
+
+## Phase 1D.1U: successful hardware TWRP backup
+
+On the real Lenovo TB-8704F, using TWRP 3.7.0_9-0 from
+`TB8704F-twrp-phase1d1q-rpmb.img` (SHA-256
+`14b2d8014ec49f3e48007048b532ab1fa4a0f8eb7933d305d2c423d81deb3475`), a
+limited hardware backup test completed successfully. The backup set contained
+only `Boot`, `Recovery` and `Persist`, stored on Internal Storage under the
+backup name `phase1d1u-test`. `Data`, `System`, `System Image`, `Cache` and
+`Lenovo Custom` were not backed up.
+
+TWRP reported successful completion. The remote backup size was 128.4M, and
+the complete backup directory was copied over ADB to the Windows test host at:
+
+```text
+C:\adb\TB8704F-Lab\dumps\phase1d1u-backup\
+```
+
+The raw Boot partition had SHA-256
+`c8452ea44988f7cab79b759a574170a34be185e2acd84e82e19eff7b9267926f` before
+the backup. The Boot backup was a bit-identical raw copy, and the raw Boot
+hash was unchanged afterwards. The raw Recovery partition had SHA-256
+`5f45d4deb20c67894d5ed97861ed6f6192e241630fccd12500ee48aad8903ce5` before
+the backup. The Recovery backup was a bit-identical raw copy, and the raw
+Recovery hash was unchanged afterwards. Thus both raw read paths and raw
+backup images were validated without modifying either source partition.
+
+`persist.ext4.win` was present, validating the filesystem-based ext4 Persist
+backup path. Persist restore and semantic comparison against every original
+file were not tested. No `.md5` files were generated. This is recorded as
+observed behavior of the current TWRP version, not as a backup failure: Boot
+and Recovery were independently matched to their raw partitions, and the
+copied files were additionally recorded with SHA-256 on the host. TWRP digest
+generation itself was not validated.
+
+The newly created backup directory remained on the tablet below
+`/data/media/0/TWRP/BACKUPS/...`. No partition was written by this test.
+
+This validates the TWRP backup UI path, raw Boot and Recovery backups,
+filesystem-based Persist backup, internal-storage output and complete ADB
+copy to the Windows host. Restore, Data, System, System Image, Cache, Lenovo
+Custom, external MicroSD and USB-OTG backups, and TWRP digest generation
+remain unvalidated. No restore, flash, wipe, format, Data backup, System
+backup, source change, new build or persistent recovery installation was
+performed.
