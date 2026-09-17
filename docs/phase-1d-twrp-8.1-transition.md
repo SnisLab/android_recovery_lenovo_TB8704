@@ -602,3 +602,73 @@ a137e7613e740fbd8a3e195d7c325e2e1169e36d4c71e8d4688f8037e8148a29
 ```
 
 No device boot, ADB, fastboot, flash or decrypt test was performed.
+
+## Phase 1D.1Q: qseecomd RPMB/SSD runtime closure
+
+The patched recovery-compatible `strace` from Phase 1D.1P was used for one
+diagnostic `qseecomd` invocation. The existing loader libraries loaded
+successfully. The first fatal runtime failure was:
+
+```text
+openat("/sbin/librpmb.so", O_RDONLY|O_CLOEXEC) = -1 ENOENT
+qseecomd then exit_group(-1)
++++ exited with 255 +++
+```
+
+No `/dev/qseecom` or `/dev/ion` access occurred before exit, and
+`/firmware/image` was not accessed. `sys.keymaster.loaded` remained empty.
+The failure therefore occurred before QSEE/Keymaster initialization.
+
+The qseecomd string audit found these dynamic library references:
+
+```text
+librpmb.so
+libssd.so
+```
+
+Both files were imported exclusively from the TB-8704F-specific historical
+tree `brianreboot/twrp_device_lenovo_tb_8704f` at commit
+`508409d8dcdf2084a5a165e07babe013d1854494`:
+
+```text
+recovery/root/sbin/librpmb.so
+  Git blob: ac6dea09b70f7d47e4146989f006404da453a549
+  Size: 27952 bytes
+  SHA-256: 837c62c8c2f72d17e56d919662e2bc68056245e7f690810ed58263bfcdff1f16
+  ELF: ELF64/AArch64
+  SONAME: librpmb.so
+  DT_NEEDED: libutils.so, libQSEEComAPI.so, liblog.so, libc++.so, libdl.so,
+    libc.so, libm.so
+
+recovery/root/sbin/libssd.so
+  Git blob: eab409dbee8664ab17bbaa553ad586a4069eca1d
+  Size: 10280 bytes
+  SHA-256: ce3b7a009c9b9b8f479f453f2f5922b4c733d6466ab82a4a3e8cbfdbc4019914
+  ELF: ELF64/AArch64
+  SONAME: libssd.so
+  DT_NEEDED: libutils.so, libcutils.so, libdiag.so, liblog.so,
+    libQSEEComAPI.so, libc++.so, libdl.so, libc.so, libm.so
+```
+
+The complete direct dependency closure was already present in the recovery
+`/sbin` output, so no additional proprietary libraries were imported. The
+device makefile adds only `librpmb.so` and `libssd.so` to `/sbin`; no historical
+directory-wide import was made. `strace` remains absent from the recovery
+image.
+
+The recovery build completed successfully. The resulting image is:
+
+```text
+TB8704F-twrp-phase1d1q-rpmb.img
+size: 23582720 bytes
+sha256: 14b2d8014ec49f3e48007048b532ab1fa4a0f8eb7933d305d2c423d81deb3475
+TWRP: 3.7.0_9-0
+kernel sha256: 9ed23e2eae57b61350110faaccd2a4a6fa6a3651535788275dd7aa0db55dff0c
+```
+
+The Crypto/FDE settings remain enabled, the QCOM common checkout remains at
+the safeguarded SnisLab commit `8d57af0d3ba83215987b444a5996532aad2e6b1b`,
+and the recovery `libcryptfs_hw` contains the refusal safety log without
+`--wipe_data` or `/cache/recovery/command`. The fstab is unchanged.
+
+No device boot, hardware, ADB, fastboot, flash or decrypt test was performed.
